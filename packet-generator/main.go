@@ -1,54 +1,62 @@
 package main
 
 import (
-	//"log"
 	"bytes"
+	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
-
-	//"net"
+	//"log"
 	"net/http"
-
-	//"os"
-	"flag"
-	//"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type runData struct {
 	Packets      int    `json:"packets"`
-	Target       string `json:"target"`
+	TimeInterval int	`json:"timeinterval"`
 }
 
 var rd runData
 
 func init() {
-	var ip_address_string string
-
+	// take command line args
 	flag.IntVar(&rd.Packets, "packets", 0, "number of packets to send")
-	flag.StringVar(&ip_address_string, "ip", "127.0.0.1", "ip address of target as a string")
+	flag.IntVar(&rd.TimeInterval, "time interval", 5, "time between packet launches")
 	flag.Parse()
-	
 }
 
 func main() {
+	ticker := time.NewTicker(time.Duration(rd.TimeInterval) * time.Second)
+	done := make(chan bool)
+	
+	// launch a goroutine
+	go func() {
+		for {
+			select {
+		
+			case <- done:
+				return
+			case t := <- ticker.C:
+				sendPacket()
+				fmt.Println("Packet sent at: ", t)
 
-	router := gin.Default()
-	router.GET("/runData", getRunData)
-	sendHello()
-	router.Run("localhost:8080")
+			}
+		}
+	}()
+	time.Sleep(60 * time.Second)
+	ticker.Stop()
+	done <- true
+	fmt.Println("Ticker Stopped")
 }
 
-
-func getRunData(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, rd)
-}
-
-func sendHello() {
+func sendPacket() {
+	// hard coded url of the api
 	url := "http://localhost:3000/packets"
-	hello := []byte(`{"Priority":10,"Weight":111}`)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(hello))
+	payload, err := json.Marshal(packets)
+	fmt.Println(payload)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
 	if err != nil {
 		fmt.Print("%v\n", err)
 		return
