@@ -15,9 +15,9 @@ function fetchData() {
             return response.json();
         })
         .then((json) => {
-            document.getElementById("getContent").value = json
+            document.getElementById("getContent").value = JSON.stringify(json)
         })
-        .then(data => console.log(data))
+        .then(data => console.log(JSON.stringify(data)))
         .catch(error => console.error('Error: ', error));
 }
 

@@ -23,6 +23,22 @@ var packets = []packet{
 	{Priority: 20, Weight: 10},
 }
 
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func getPacket(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, packets)
 }
@@ -38,6 +54,8 @@ func postPacket(c *gin.Context) {
 
 func main() {
 	router := gin.Default()
+	router.Use(CORSMiddleware())
+
 	router.GET("/packets", getPacket)
 	router.POST("/packets", postPacket)
 
