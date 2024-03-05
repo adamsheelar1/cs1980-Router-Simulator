@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.centered-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  padding: 20px;
+}
+
+button {
+  color: white;
+  /* background: linear-gradient(to right, #007bff, green); */
+  padding: 5px;
+  border-radius: 500px;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  margin: 10px;
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+  
+}
+button:hover {
+  background-color: darkblue;
+}
+button:active {
+  background-color: black;
+}
+button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.container {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 180vh; /* Optional: set the height of the container to the full viewport height */
+}
+
+.button:nth-child(1) {
+  background: linear-gradient(to right, #007bff, hsl(0, 70%, 50%));
+}
+
+.button:nth-child(2) {
+  background: linear-gradient(to right, #007bff, hsl(60, 70%, 50%));
+}
+
+.button:nth-child(3) {
+  background: linear-gradient(to right, #007bff, hsl(120, 70%, 50%));
+}
+
+.button:nth-child(4) {
+  background: linear-gradient(to right, #007bff, hsl(180, 70%, 50%));
+}
+
+.button:nth-child(5) {
+  background: linear-gradient(to right, #007bff, hsl(240, 70%, 50%));
+}
+
+.button:nth-child(6) {
+  background: linear-gradient(to right, #007bff, hsl(300, 70%, 50%));
+}
