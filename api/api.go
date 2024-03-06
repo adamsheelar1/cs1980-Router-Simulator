@@ -1,26 +1,24 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type packet struct {
-	Priority float64 `json:"priority"`
-	Weight   float64 `json:"weight"`
+	Application string `json:"application"`
+	Weight   int `json:"weight"`
 }
 
 type inData struct {
 	Packets     int16 `json:"packets"`
-	Transmiting bool  `json:"transmiting"`
+	Transmitting bool  `json:"transmitting"`
 }
 
 var packets = []packet{
-	{Priority: 10, Weight: 200},
-	{Priority: 15, Weight: 2000},
-	{Priority: 1, Weight: 100},
-	{Priority: 20, Weight: 10},
+	
 }
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -47,6 +45,7 @@ func postPacket(c *gin.Context) {
 	var newPacket packet
 
 	if err := c.BindJSON(&newPacket); err != nil {
+		log.Println(err)
 		return
 	}
 	packets = append(packets, newPacket)

@@ -6,11 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
+
 	//"log"
 	"net/http"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 type runData struct {
@@ -26,10 +26,12 @@ func init() {
 	flag.IntVar(&rd.TimeInterval, "time interval", 5, "time between packet launches")
 	flag.Parse()
 }
-
+// make a context,
+// ctx, cancel := ontext.WithCancel(context.Background())
 func main() {
 	ticker := time.NewTicker(time.Duration(rd.TimeInterval) * time.Second)
-	done := make(chan bool)
+	done := make(chan bool) 
+	// -> use cancel instead
 	
 	// launch a goroutine
 	go func() {
@@ -41,6 +43,8 @@ func main() {
 			case t := <- ticker.C:
 				sendPacket()
 				fmt.Println("Packet sent at: ", t)
+				//time.Sleep(randomTime)
+				//ticker.Reset(duration)
 
 			}
 		}
@@ -55,10 +59,10 @@ func sendPacket() {
 	// hard coded url of the api
 	url := "http://localhost:3000/packets"
 	payload, err := json.Marshal(packets)
-	fmt.Println(payload)
+	fmt.Fprintf(os.Stdout, "%s", payload)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
 	if err != nil {
-		fmt.Print("%v\n", err)
+		fmt.Printf("%v\n", err)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
