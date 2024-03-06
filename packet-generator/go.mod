@@ -2,7 +2,10 @@ module github.com/cs1980-Router-Simulator/packet-generator
 
 go 1.22.0
 
-require github.com/gin-gonic/gin v1.9.1
+require (
+	github.com/gin-gonic/gin v1.9.1
+	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
+)
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect

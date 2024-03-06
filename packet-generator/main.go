@@ -2,20 +2,23 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/signal"
+	"syscall"
 
 	//"log"
 	"net/http"
-	"time"
+	//"time"
 )
 
 type runData struct {
-	Packets      int    `json:"packets"`
-	TimeInterval int	`json:"timeinterval"`
+	Packets      int `json:"packets"`
+	TimeInterval int `json:"timeinterval"`
 }
 
 var rd runData
@@ -26,39 +29,30 @@ func init() {
 	flag.IntVar(&rd.TimeInterval, "time interval", 5, "time between packet launches")
 	flag.Parse()
 }
+
 // make a context,
 // ctx, cancel := ontext.WithCancel(context.Background())
 func main() {
-	ticker := time.NewTicker(time.Duration(rd.TimeInterval) * time.Second)
-	done := make(chan bool) 
-	// -> use cancel instead
-	
-	// launch a goroutine
-	go func() {
-		for {
-			select {
-		
-			case <- done:
-				return
-			case t := <- ticker.C:
-				sendPacket()
-				fmt.Println("Packet sent at: ", t)
-				//time.Sleep(randomTime)
-				//ticker.Reset(duration)
 
-			}
-		}
-	}()
-	time.Sleep(60 * time.Second)
-	ticker.Stop()
-	done <- true
-	fmt.Println("Ticker Stopped")
+	// just want to call spawnClients()
+	ctx, cancel := context.WithCancel(context.Background())
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc,
+		syscall.SIGHUP,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT)
+	spawnClients(ctx)
+
+	<- sigc
+	cancel()
+
 }
 
-func sendPacket() {
+func sendPacket(packet packetData) {
 	// hard coded url of the api
-	url := "http://localhost:3000/packets"
-	payload, err := json.Marshal(packets)
+	url := "http://localhost:3000/packets"	
+	payload, err := json.Marshal(packet)
 	fmt.Fprintf(os.Stdout, "%s", payload)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
 	if err != nil {
@@ -68,21 +62,19 @@ func sendPacket() {
 	req.Header.Set("Content-Type", "application/json")
 
 	res, err := http.DefaultClient.Do(req)
-    if err != nil {
-        //Specific error handling would depend on scenario
-        fmt.Printf("%v\n", err)
-        return
-    }
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
 
-    body, err := ioutil.ReadAll(res.Body)
-        if err != nil {
-        //Specific error handling would depend on scenario
-        fmt.Printf("%v\n", err)
-        return
-    }
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
 
-    fmt.Println(string(body))
-    res.Body.Close()
+	fmt.Println(string(body))
+	res.Body.Close()
 }
-
-
