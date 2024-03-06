@@ -1,6 +1,8 @@
 package main
 
 import (
+	//"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -17,9 +19,7 @@ type inData struct {
 	Transmitting bool  `json:"transmitting"`
 }
 
-var packets = []packet{
-	
-}
+var totalPackets int
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -42,16 +42,20 @@ func getPacket(c *gin.Context) {
 }
 
 func postPacket(c *gin.Context) {
-	var newPacket packet
+	var newPacket []packet
 
 	if err := c.BindJSON(&newPacket); err != nil {
 		log.Println(err)
 		return
+	} else {
+		totalPackets++
+		fmt.Println(totalPackets)
 	}
-	packets = append(packets, newPacket)
+	
 }
 
 func main() {
+	totalPackets = 0
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
