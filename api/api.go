@@ -16,6 +16,7 @@ type packet struct {
 	Weight   int `json:"weight"`
 }
 
+var applications map[string]int
 var totalPackets int
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -34,8 +35,20 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func getPacket(c *gin.Context) {
+func getTotalPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPackets)
+}
+
+func getServerPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, applications["server"])
+}	
+
+func getSafetyPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, applications["safety"])
+}
+
+func getSecurityPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, applications["security"])
 }
 
 func postPacket(c *gin.Context) {
@@ -46,6 +59,7 @@ func postPacket(c *gin.Context) {
 		return
 	} else {
 		totalPackets++
+		applications[newPacket.Application]++
 		fmt.Println(totalPackets)
 	}
 	
@@ -53,10 +67,16 @@ func postPacket(c *gin.Context) {
 
 func main() {
 	totalPackets = 0
+	applications = make(map[string]int)
+
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
-	router.GET("/packets", getPacket)
+	router.GET("/packets", getTotalPackets)
+	router.GET("/server", getServerPackets)
+	router.GET("/safety", getSafetyPackets)
+	router.GET("/security", getSecurityPackets)
+
 	router.POST("/packets", postPacket)
 
 	router.Run("localhost:3000")
