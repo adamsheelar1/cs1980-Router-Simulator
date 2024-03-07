@@ -16,11 +16,6 @@ type packet struct {
 	Weight   int `json:"weight"`
 }
 
-type inData struct {
-	Packets     int16 `json:"packets"`
-	Transmitting bool  `json:"transmitting"`
-}
-
 var totalPackets int
 
 func CORSMiddleware() gin.HandlerFunc {
