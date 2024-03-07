@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	//"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,11 +40,11 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 func getPacket(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, packets)
+	c.IndentedJSON(http.StatusOK, totalPackets)
 }
 
 func postPacket(c *gin.Context) {
-	var newPacket []packet
+	var newPacket packet
 
 	if err := c.BindJSON(&newPacket); err != nil {
 		log.Println(err)
