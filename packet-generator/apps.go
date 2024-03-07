@@ -18,10 +18,11 @@ var applications = []string{
 	"safety",
 	"security",
 }
+
 var weights = []int{
 	100,
-	101,
-	99,
+	150,
+	150,
 }
 
 func spawnClients(ctx context.Context) {
