@@ -1,13 +1,6 @@
 package main
 
 import (
-	//"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-
-	//"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,39 +20,6 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-// func getTotalPackets(c *gin.Context) {
-// 	c.IndentedJSON(http.StatusOK, totalPackets)
-// }
-
-// func getServerPackets(c *gin.Context) {
-// 	c.IndentedJSON(http.StatusOK, throughApplications["server"])
-// }	
-
-// func getSafetyPackets(c *gin.Context) {
-// 	c.IndentedJSON(http.StatusOK, throughApplications["safety"])
-// }
-
-// func getSecurityPackets(c *gin.Context) {
-// 	c.IndentedJSON(http.StatusOK, throughApplications["security"])
-// }
-
-// // TODO: change to just adding to buffer then run algorithm
-// // everytime that we hit a certain amount of time
-// func postPacket(c *gin.Context) {
-// 	var newPacket packet
-
-// 	if err := c.BindJSON(&newPacket); err != nil {
-// 		log.Println(err)
-// 		return
-// 	} else {
-// 		totalPackets++
-// 		buffer = append(buffer, newPacket)
-// 		totalApplications[newPacket.Application]++
-// 		fmt.Println(totalPackets)
-// 	}
-	
-// }
-
 func main() {
 	totalPackets = 0
 	totalApplications = make(map[string]int)
@@ -68,16 +28,16 @@ func main() {
 	router.Use(CORSMiddleware())
 
 	router.GET("/packets", getTotalPackets)
-	router.GET("/lostpackets", getPacketsLost)
-	router.GET("/server", getServerPackets)
+	router.GET("/packetsLost", getTotalPacketsLost)
+	router.GET("/server", getServerThrough)
 	router.GET("/serverTotal", getServerTotal)
-	router.GET("/safety", getSafetyPackets)
+	router.GET("/safety", getSafetyThrough)
 	router.GET("/safetyTotal", getSafetyTotal)
-	router.GET("/security", getSecurityPackets)
+	router.GET("/security", getSecurityThrough)
 	router.GET("/securityTotal", getSecurityTotal)
 
 	router.POST("/packets", postPacket)
+	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
 	router.Run("localhost:3000")
-
 }

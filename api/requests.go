@@ -12,6 +12,10 @@ func getTotalPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPackets)
 }
 
+func getTotalPacketsLost(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, totalPacketsLost)
+}
+
 func getServerThrough(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, throughApplications["server"])
 }	
@@ -37,8 +41,6 @@ func getSecurityTotal(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalApplications["security"])
 }
 
-// TODO: change to just adding to buffer then run algorithm
-// everytime that we hit a certain amount of time
 func postPacket(c *gin.Context) {
 	var newPacket packet
 
@@ -51,5 +53,15 @@ func postPacket(c *gin.Context) {
 		totalApplications[newPacket.Application]++
 		fmt.Println(totalPackets)
 	}
-	
+}
+
+func postNetworkCapacity(c *gin.Context) {
+	var newNetworkCapacity int
+	if err := c.BindJSON(&newNetworkCapacity); err != nil {
+		log.Println(err)
+		return
+	} else {
+		networkCapacity = newNetworkCapacity
+		fmt.Println("Network capacity changed to: ", networkCapacity)
+	}
 }
