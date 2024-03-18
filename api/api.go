@@ -11,14 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type packet struct {
-	Application string `json:"application"`
-	Weight   int `json:"weight"`
-}
-
-var applications map[string]int
-var totalPackets int
-
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -35,47 +27,54 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func getTotalPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalPackets)
-}
+// func getTotalPackets(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, totalPackets)
+// }
 
-func getServerPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, applications["server"])
-}	
+// func getServerPackets(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, throughApplications["server"])
+// }	
 
-func getSafetyPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, applications["safety"])
-}
+// func getSafetyPackets(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, throughApplications["safety"])
+// }
 
-func getSecurityPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, applications["security"])
-}
+// func getSecurityPackets(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, throughApplications["security"])
+// }
 
-func postPacket(c *gin.Context) {
-	var newPacket packet
+// // TODO: change to just adding to buffer then run algorithm
+// // everytime that we hit a certain amount of time
+// func postPacket(c *gin.Context) {
+// 	var newPacket packet
 
-	if err := c.BindJSON(&newPacket); err != nil {
-		log.Println(err)
-		return
-	} else {
-		totalPackets++
-		applications[newPacket.Application]++
-		fmt.Println(totalPackets)
-	}
+// 	if err := c.BindJSON(&newPacket); err != nil {
+// 		log.Println(err)
+// 		return
+// 	} else {
+// 		totalPackets++
+// 		buffer = append(buffer, newPacket)
+// 		totalApplications[newPacket.Application]++
+// 		fmt.Println(totalPackets)
+// 	}
 	
-}
+// }
 
 func main() {
 	totalPackets = 0
-	applications = make(map[string]int)
+	totalApplications = make(map[string]int)
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
 	router.GET("/packets", getTotalPackets)
+	router.GET("/lostpackets", getPacketsLost)
 	router.GET("/server", getServerPackets)
+	router.GET("/serverTotal", getServerTotal)
 	router.GET("/safety", getSafetyPackets)
+	router.GET("/safetyTotal", getSafetyTotal)
 	router.GET("/security", getSecurityPackets)
+	router.GET("/securityTotal", getSecurityTotal)
 
 	router.POST("/packets", postPacket)
 
