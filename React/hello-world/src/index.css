@@ -14,12 +14,20 @@ code {
 
 .centered-box {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 20%;
+  left: 80%;
   transform: translate(-50%, -50%);
   background-color: #ffffff;
   border: 1px solid #000000;
   padding: 20px;
+}
+
+.MyResponsivePie {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
 }
 
 button {

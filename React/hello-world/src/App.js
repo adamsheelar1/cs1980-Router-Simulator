@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Button from './components/Button';
 import CenterBox from './components/CenterBox';
+import MyResponsivePie from './components/MyResponsivePie';
 
 function App() {
   const [displayText, setDisplayText] = useState('');
@@ -38,13 +39,24 @@ function App() {
   };
   
   
+  const data = [
+    { id: 'A', value: 100 },
+    { id: 'B', value: 200 },
+    { id: 'C', value: 300 },
+    { id: 'D', value: 100 },
+    ];
 
   return (
     <div>
       <CenterBox text={displayText}>
         <p>This is some text in the center of the screen.</p>
       </CenterBox>
+
+      <div className="MyResponsivePie"><MyResponsivePie data={data} /></div>
+        
+      
       <div className="container">
+      
         <Button onClick={() => fetchData()}>Fetch Data</Button>
         <Button onClick={handleClick}>Second</Button>
         <Button onClick={handleClick}>Third</Button>
