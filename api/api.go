@@ -22,7 +22,9 @@ func CORSMiddleware() gin.HandlerFunc {
 
 func main() {
 	totalPackets = 0
+	totalPacketsLost = 0
 	totalApplications = make(map[string]int)
+	throughApplications = make(map[string]int)
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())

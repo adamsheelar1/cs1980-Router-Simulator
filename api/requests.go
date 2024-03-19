@@ -42,15 +42,24 @@ func getSecurityTotal(c *gin.Context) {
 }
 
 func postPacket(c *gin.Context) {
-	var newPacket packet
+	var packetIn packet
+	var newPacket expandedPacket
 
-	if err := c.BindJSON(&newPacket); err != nil {
+	if err := c.BindJSON(&packetIn); err != nil {
 		log.Println(err)
 		return
 	} else {
 		totalPackets++
+		newPacket.packet = packetIn
+		newPacket.Priority = priority[newPacket.packet.Application]
+
+		// naive approach to creating the profit we would get from using this item in the knapsack
+		newPacket.Profit = newPacket.Priority / newPacket.packet.Weight
+
+		// store this bigger packet
 		buffer = append(buffer, newPacket)
-		totalApplications[newPacket.Application]++
+
+		totalApplications[newPacket.packet.Application]++
 		fmt.Println(totalPackets)
 	}
 }
