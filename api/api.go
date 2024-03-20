@@ -1,27 +1,23 @@
 package main
 
 import (
+	//"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
+
+	//"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type packet struct {
-	Priority float64 `json:"priority"`
-	Weight   float64 `json:"weight"`
+	Application string `json:"application"`
+	Weight   int `json:"weight"`
 }
 
-type inData struct {
-	Packets     int16 `json:"packets"`
-	Transmiting bool  `json:"transmiting"`
-}
-
-var packets = []packet{
-	{Priority: 10, Weight: 200},
-	{Priority: 15, Weight: 2000},
-	{Priority: 1, Weight: 100},
-	{Priority: 20, Weight: 10},
-}
+var applications map[string]int
+var totalPackets int
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -39,24 +35,48 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func getPacket(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, packets)
+func getTotalPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, totalPackets)
+}
+
+func getServerPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, applications["server"])
+}	
+
+func getSafetyPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, applications["safety"])
+}
+
+func getSecurityPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, applications["security"])
 }
 
 func postPacket(c *gin.Context) {
 	var newPacket packet
 
 	if err := c.BindJSON(&newPacket); err != nil {
+		log.Println(err)
 		return
+	} else {
+		totalPackets++
+		applications[newPacket.Application]++
+		fmt.Println(totalPackets)
 	}
-	packets = append(packets, newPacket)
+	
 }
 
 func main() {
+	totalPackets = 0
+	applications = make(map[string]int)
+
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
-	router.GET("/packets", getPacket)
+	router.GET("/packets", getTotalPackets)
+	router.GET("/server", getServerPackets)
+	router.GET("/safety", getSafetyPackets)
+	router.GET("/security", getSecurityPackets)
+
 	router.POST("/packets", postPacket)
 
 	router.Run("localhost:3000")

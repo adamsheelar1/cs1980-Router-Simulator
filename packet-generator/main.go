@@ -1,76 +1,80 @@
 package main
 
 import (
-	//"log"
 	"bytes"
+	"context"
+	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"os/signal"
+	"syscall"
 
-	//"net"
+	//"log"
 	"net/http"
-
-	//"os"
-	"flag"
-	//"fmt"
-
-	"github.com/gin-gonic/gin"
+	//"time"
 )
 
 type runData struct {
-	Packets      int    `json:"packets"`
-	Target       string `json:"target"`
+	Packets      int `json:"packets"`
+	TimeInterval int `json:"timeinterval"`
 }
 
 var rd runData
 
 func init() {
-	var ip_address_string string
-
+	// take command line args
 	flag.IntVar(&rd.Packets, "packets", 0, "number of packets to send")
-	flag.StringVar(&ip_address_string, "ip", "127.0.0.1", "ip address of target as a string")
+	flag.IntVar(&rd.TimeInterval, "time interval", 5, "time between packet launches")
 	flag.Parse()
-	
 }
 
+// make a context,
+// ctx, cancel := ontext.WithCancel(context.Background())
 func main() {
 
-	router := gin.Default()
-	router.GET("/runData", getRunData)
-	sendHello()
-	router.Run("localhost:8080")
+	// just want to call spawnClients()
+	ctx, cancel := context.WithCancel(context.Background())
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc,
+		syscall.SIGHUP,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT)
+	spawnClients(ctx)
+
+	<- sigc
+	cancel()
+
 }
 
-
-func getRunData(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, rd)
-}
-
-func sendHello() {
-	url := "http://localhost:3000/packets"
-	hello := []byte(`{"Priority":10,"Weight":111}`)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(hello))
+func sendPacket(packet packetData) {
+	// hard coded url of the api
+	url := "http://localhost:3000/packets"	
+	payload, err := json.Marshal(packet)
+	fmt.Fprintf(os.Stdout, "%s", payload)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
 	if err != nil {
-		fmt.Print("%v\n", err)
+		fmt.Printf("%v\n", err)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	res, err := http.DefaultClient.Do(req)
-    if err != nil {
-        //Specific error handling would depend on scenario
-        fmt.Printf("%v\n", err)
-        return
-    }
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
 
-    body, err := ioutil.ReadAll(res.Body)
-        if err != nil {
-        //Specific error handling would depend on scenario
-        fmt.Printf("%v\n", err)
-        return
-    }
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
 
-    fmt.Println(string(body))
-    res.Body.Close()
+	fmt.Println(string(body))
+	res.Body.Close()
 }
-
-
