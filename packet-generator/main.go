@@ -51,7 +51,11 @@ func main() {
 
 func sendPacket(packet packetData) {
 	// hard coded url of the api
+<<<<<<< HEAD
 	url := "http://api:3000/packets"
+=======
+	url := "http://api:3000/packets"	
+>>>>>>> 498f65e671bfb000f8bddd84ae1d49d7f4ec50a6
 	payload, err := json.Marshal(packet)
 	fmt.Fprintf(os.Stdout, "%s", payload)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
