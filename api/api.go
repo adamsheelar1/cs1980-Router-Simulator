@@ -13,7 +13,7 @@ import (
 
 type packet struct {
 	Application string `json:"application"`
-	Weight   int `json:"weight"`
+	Weight      int    `json:"weight"`
 }
 
 var applications map[string]int
@@ -41,7 +41,7 @@ func getTotalPackets(c *gin.Context) {
 
 func getServerPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, applications["server"])
-}	
+}
 
 func getSafetyPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, applications["safety"])
@@ -62,7 +62,7 @@ func postPacket(c *gin.Context) {
 		applications[newPacket.Application]++
 		fmt.Println(totalPackets)
 	}
-	
+
 }
 
 func main() {
@@ -79,6 +79,6 @@ func main() {
 
 	router.POST("/packets", postPacket)
 
-	router.Run("localhost:3000")
+	router.Run("0.0.0.0:3000")
 
 }

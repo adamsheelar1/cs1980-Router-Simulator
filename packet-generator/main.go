@@ -44,14 +44,18 @@ func main() {
 		syscall.SIGQUIT)
 	spawnClients(ctx)
 
-	<- sigc
+	<-sigc
 	cancel()
 
 }
 
 func sendPacket(packet packetData) {
 	// hard coded url of the api
-	url := "http://localhost:3000/packets"	
+
+	// IF using docker network url is changed to http://api:/3000/packets
+	//if running locally  built yourself url is http://localhost:3000/packets
+
+	url := "http://api:3000/packets"
 	payload, err := json.Marshal(packet)
 	fmt.Fprintf(os.Stdout, "%s", payload)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
