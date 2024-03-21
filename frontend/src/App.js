@@ -13,7 +13,7 @@ function App() {
 
   const [content, setContent] = useState('');
   const fetchData = () => {
-    const url = "http://localhost:3000/packets";
+    const url = "http://api:3000/packets";
   
     fetch(url)
       .then(response => {
