@@ -23,16 +23,18 @@ code {
 }
 
 .MyResponsivePie {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  /* position: fixed; */
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 80vh;
 }
-
+.MyResponsivePie2 {
+  animation: fade-in 3s;
+}
 button {
   color: white;
-  /* background: linear-gradient(to right, #007bff, green); */
   padding: 5px;
   border-radius: 500px;
   width: 100px;
@@ -41,10 +43,6 @@ button {
   border: none;
   outline: none;
   margin: 10px;
-  /* top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); */
-  
 }
 button:hover {
   background-color: darkblue;
@@ -62,12 +60,14 @@ button:disabled:hover {
 }
 
 .container {
-  text-align: center;
+  position: fixed;
+  bottom: 5%; /* Align container to the bottom */
+  width: 100%; /* Make container full width */
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 180vh; /* Optional: set the height of the container to the full viewport height */
 }
+
 
 .button:nth-child(1) {
   background: linear-gradient(to right, #007bff, hsl(0, 70%, 50%));
