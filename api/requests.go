@@ -46,8 +46,8 @@ func getSecurityTotal(c *gin.Context) {
 }
 
 func postPacket(c *gin.Context) {
-	var packetIn packet
-	var newPacket expandedPacket
+	var packetIn Packet
+	var newPacket ExpandedPacket
 
 	if err := c.BindJSON(&packetIn); err != nil {
 		log.Println(err)

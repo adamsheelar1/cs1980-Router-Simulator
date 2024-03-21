@@ -4,18 +4,18 @@ import "sort"
 
 //"fmt"
 
-type packet struct {
+type Packet struct {
 	Application string `json:"application"`
 	Weight      int    `json:"weight"`
 }
 
-type expandedPacket struct {
-	packet packet
+type ExpandedPacket struct {
+	packet Packet
 	Priority int
 	Profit int
 }
 
-var buffer = []expandedPacket{}
+var buffer = []ExpandedPacket{}
 
 var totalApplications map[string]int
 
@@ -37,12 +37,14 @@ var priority = map[string]int{
 	"security" : 1300,
 }
 
-
+type CumulativePackets struct {
+	
+}
 
 
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
-	var newBuffer = []expandedPacket{}
+	var newBuffer = []ExpandedPacket{}
 	copy(newBuffer, buffer)
 	buffer = nil
 
