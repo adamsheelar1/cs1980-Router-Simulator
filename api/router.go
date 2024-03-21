@@ -15,7 +15,6 @@ type expandedPacket struct {
 	Profit int
 }
 
-
 var buffer = []expandedPacket{}
 
 var totalApplications map[string]int
@@ -37,6 +36,8 @@ var priority = map[string]int{
 	"safety" : 1500,
 	"security" : 1300,
 }
+
+
 
 
 func runAlgorithm() {

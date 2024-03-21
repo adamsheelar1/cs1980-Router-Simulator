@@ -31,8 +31,9 @@ func main() {
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
-	router.GET("/packets", getTotalPackets)
+	router.GET("/packets", getPackets)
 	router.GET("/packetsLost", getTotalPacketsLost)
+	router.GET("/totalPackets", getTotalPackets)
 	router.GET("/server", getServerThrough)
 	router.GET("/serverTotal", getServerTotal)
 	router.GET("/safety", getSafetyThrough)
@@ -44,6 +45,7 @@ func main() {
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
 	router.Run("localhost:3000")
+	// https://localhost:3000/
 
 	ticker := time.NewTicker(5 * time.Second)
 	done := make(chan bool)

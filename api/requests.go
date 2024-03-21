@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func getPackets(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, )
+}
+
 func getTotalPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPackets)
 }
