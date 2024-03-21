@@ -32,7 +32,7 @@ func main() {
 	router.Use(CORSMiddleware())
 
 	router.GET("/packets", getPackets)
-	router.GET("/packetsLost", getTotalPacketsLost)
+	router.GET("/totalPacketsLost", getTotalPacketsLost)
 	router.GET("/totalPackets", getTotalPackets)
 	router.GET("/server", getServerThrough)
 	router.GET("/serverTotal", getServerTotal)

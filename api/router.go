@@ -37,13 +37,9 @@ var priority = map[string]int{
 	"security" : 1300,
 }
 
-type CumulativePackets struct {
-	
-}
-
-
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
+	networkCapacity = 1000
 	var newBuffer = []ExpandedPacket{}
 	copy(newBuffer, buffer)
 	buffer = nil
