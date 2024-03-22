@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Button from './components/Button';
 import CenterBox from './components/CenterBox';
@@ -9,11 +9,41 @@ function App() {
   const [displayText, setDisplayText] = useState('');
   const [showGraph, setShowGraph] = useState(false); // State for controlling graph display
   const [isIn, setIsIn] = useState(false); // State for controlling fade-in animation
+  const [data, setData] = useState([
+    { id: 'A', value: 100 },
+    { id: 'B', value: 200 },
+    { id: 'C', value: 300 },
+    { id: 'D', value: 10 },
+  ]);
+  const [randomIndex, setRandomIndex] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+        // Generate a random index to select a random element from the data array
+        const newIndex = randomIndex
+        // Update the value of the randomly selected element
+        setData(prevData => {
+            // Create a copy of the previous data array
+            const newData = [...prevData];
+            
+            // Update the value of the selected element
+            newData[newIndex] = {
+                ...newData[newIndex],
+                value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
+            };
+            
+            return newData;
+        });
+        // Update random index state
+        
+    }, 200); // Update every 2 seconds
 
-  const handleClick = () => {
-    setShowGraph(false);
-    const buttonNumber = Math.floor(Math.random() * 6) + 1;
-    setDisplayText(`Button clicked, random number is ${buttonNumber}`);
+    return () => clearInterval(interval);
+}, [data]); // Run whenever data changes
+
+  const handleClick = (index) => {
+    setShowGraph(true);
+    setRandomIndex(index);
   };
 
   const PieChartClick = () => {
@@ -37,10 +67,15 @@ function App() {
 
         return response.json();
       })
-      .then(json => {
+      .then(packet => {
         // Update the state to show the graph when data is fetched
         setShowGraph(true);
         setIsIn(true); // Set isIn to true when data is fetched
+
+        // Display the packet in a box or log it
+        console.log('Packet:', packet); // Example: Log the packet
+        // Update displayText state with packet content
+        setDisplayText(JSON.stringify(packet, null, 2)); // Example: Display JSON stringified packet with indentation
       })
       .catch(error => {
         console.error('Error: ', error.message);
@@ -48,17 +83,12 @@ function App() {
       });
   };
 
-  const data = [
-    { id: 'A', value: 100 },
-    { id: 'B', value: 200 },
-    { id: 'C', value: 300 },
-    { id: 'D', value: 100 },
-  ];
-
   return (
+    
     <div>
+        
       <CenterBox text={displayText}>
-        <p>This is some text in the center of the screen.</p>
+        <p>Packet Display</p>
       </CenterBox>
 
       {/* Wrap MyResponsivePie component with FadeIn component */}
@@ -72,12 +102,13 @@ function App() {
         {/* Update the state to show graph when button is clicked */}
         <Button onClick={() => fetchData()}>Fetch Data</Button>
         <Button onClick={PieChartClick}>PieChart</Button>
-        <Button onClick={handleClick}>Third</Button>
-        <Button onClick={handleClick}>Fourth</Button>
-        <Button onClick={handleClick}>Fifth</Button>
-        <Button onClick={handleClick}>Sixth</Button>
+        <Button onClick={() => handleClick(0)}>A</Button>
+        <Button onClick={() => handleClick(1)}>B</Button>
+        <Button onClick={() => handleClick(2)}>C</Button>
+        <Button onClick={() => handleClick(3)}>D</Button>
       </div>
     </div>
+
   );
 }
 
