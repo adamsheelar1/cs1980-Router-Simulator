@@ -102,10 +102,10 @@ function App() {
         {/* Update the state to show graph when button is clicked */}
         <Button onClick={() => fetchData()}>Fetch Data</Button>
         <Button onClick={PieChartClick}>PieChart</Button>
-        <Button onClick={() => handleClick(0)}>Third</Button>
-        <Button onClick={() => handleClick(1)}>Fourth</Button>
-        <Button onClick={() => handleClick(2)}>Fifth</Button>
-        <Button onClick={() => handleClick(3)}>Sixth</Button>
+        <Button onClick={() => handleClick(0)}>A</Button>
+        <Button onClick={() => handleClick(1)}>B</Button>
+        <Button onClick={() => handleClick(2)}>C</Button>
+        <Button onClick={() => handleClick(3)}>D</Button>
       </div>
     </div>
 
