@@ -44,23 +44,10 @@ button {
   outline: none;
   margin: 10px;
 }
-button:hover {
-  background-color: darkblue;
-}
-button:active {
-  background-color: black;
-}
-button:disabled {
-  background-color: gray;
-  cursor: not-allowed;
-}
-button:disabled:hover {
-  background-color: gray;
-  cursor: not-allowed;
-}
+
 
 .container {
-  position: fixed;
+  /* position: fixed; */
   bottom: 5%; /* Align container to the bottom */
   width: 100%; /* Make container full width */
   display: flex;
@@ -91,4 +78,25 @@ button:disabled:hover {
 
 .button:nth-child(6) {
   background: linear-gradient(to right, #007bff, hsl(300, 70%, 50%));
+}
+
+.button:hover {
+  background-color: darkblue;
+}
+.button:active {
+  background-color: black;
+}
+.button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+.button:disabled:hover {
+  background-color: gray;
+  cursor: not-allowed;
+}
+body {
+  background-image: url('/public/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* Add any other background styles you want */
 }

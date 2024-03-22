@@ -15,35 +15,35 @@ function App() {
     { id: 'C', value: 300 },
     { id: 'D', value: 10 },
   ]);
-
+  const [randomIndex, setRandomIndex] = useState(0);
+  
   useEffect(() => {
     const interval = setInterval(() => {
         // Generate a random index to select a random element from the data array
-        const randomIndex = 3;
-        
+        const newIndex = randomIndex
         // Update the value of the randomly selected element
         setData(prevData => {
             // Create a copy of the previous data array
             const newData = [...prevData];
             
             // Update the value of the selected element
-            newData[randomIndex] = {
-                ...newData[randomIndex],
-                value: newData[randomIndex].value + Math.floor(Math.random() * 10) + 1
+            newData[newIndex] = {
+                ...newData[newIndex],
+                value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
             };
             
             return newData;
         });
+        // Update random index state
+        
     }, 200); // Update every 2 seconds
 
     return () => clearInterval(interval);
-}, []); // Run only once on component mount
+}, [data]); // Run whenever data changes
 
-
-  const handleClick = () => {
-    setShowGraph(false);
-    const buttonNumber = Math.floor(Math.random() * 6) + 1;
-    setDisplayText(`random number ${buttonNumber}`);
+  const handleClick = (index) => {
+    setShowGraph(true);
+    setRandomIndex(index);
   };
 
   const PieChartClick = () => {
@@ -84,7 +84,9 @@ function App() {
   };
 
   return (
+    
     <div>
+        
       <CenterBox text={displayText}>
         <p>Packet Display</p>
       </CenterBox>
@@ -100,12 +102,13 @@ function App() {
         {/* Update the state to show graph when button is clicked */}
         <Button onClick={() => fetchData()}>Fetch Data</Button>
         <Button onClick={PieChartClick}>PieChart</Button>
-        <Button onClick={handleClick}>Third</Button>
-        <Button onClick={handleClick}>Fourth</Button>
-        <Button onClick={handleClick}>Fifth</Button>
-        <Button onClick={handleClick}>Sixth</Button>
+        <Button onClick={() => handleClick(0)}>Third</Button>
+        <Button onClick={() => handleClick(1)}>Fourth</Button>
+        <Button onClick={() => handleClick(2)}>Fifth</Button>
+        <Button onClick={() => handleClick(3)}>Sixth</Button>
       </div>
     </div>
+
   );
 }
 
