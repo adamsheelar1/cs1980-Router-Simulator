@@ -1,9 +1,10 @@
 import React from 'react';
 import { ResponsivePie } from '@nivo/pie';
 
-const MyResponsivePie = ({ data }) => (
+const MyResponsivePie = ({ data, centerText }) => (
     <ResponsivePie
         data={data}
+        centerText = {centerText}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
         innerRadius={0.5}
         padAngle={0.7}
@@ -101,6 +102,22 @@ const MyResponsivePie = ({ data }) => (
                     }
                 ]
             }
+        ]}
+        layers={[
+            'arcs',
+            'arcLabels',
+            'arcLinkLabels',
+            ({ centerX, centerY }) => (
+                <text
+                    x={centerX}
+                    y={centerY}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    style={{ fill: 'white', fontSize: '80px', fontWeight: 'bold' }}
+                >
+                    {centerText}
+                </text>
+            )
         ]}
     />
 );

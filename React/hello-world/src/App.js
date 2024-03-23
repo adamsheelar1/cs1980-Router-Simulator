@@ -16,27 +16,49 @@ function App() {
     { id: 'D', value: 10 },
   ]);
   const [randomIndex, setRandomIndex] = useState(0);
-  
+  const [centerText, setCenterText] = useState(0);
+
+  function updateData() {
+    // Generate a random index to select a random element from the data array
+    const newIndex = randomIndex
+    // Update the value of the randomly selected element
+    setData(prevData => {
+        // Create a copy of the previous data array
+        const newData = [...prevData];
+        
+        // Update the value of the selected element
+        newData[newIndex] = {
+            ...newData[newIndex],
+            value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
+        };
+        
+        return newData;
+    });
+  }
+
+  function updateTotalPackets() {
+    const newIndex = centerText
+    // Update the value of the randomly selected element
+    setCenterText(prevData => {
+        // Create a copy of the previous data array
+        const newData = fetchData;
+        
+        // // Update the value of the selected element
+        // newData[newIndex] = {
+        //     ...newData[newIndex],
+        //     value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
+        // };
+        
+        return newData;
+    });
+
+  }
   useEffect(() => {
     const interval = setInterval(() => {
-        // Generate a random index to select a random element from the data array
-        const newIndex = randomIndex
-        // Update the value of the randomly selected element
-        setData(prevData => {
-            // Create a copy of the previous data array
-            const newData = [...prevData];
-            
-            // Update the value of the selected element
-            newData[newIndex] = {
-                ...newData[newIndex],
-                value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
-            };
-            
-            return newData;
-        });
-        // Update random index state
+      updateData();
+      fetchData();
         
-    }, 200); // Update every 2 seconds
+    }, 2); // Update every 2 seconds
 
     return () => clearInterval(interval);
 }, [data]); // Run whenever data changes
@@ -47,12 +69,12 @@ function App() {
   };
 
   const PieChartClick = () => {
-    setShowGraph(true);
+    setShowGraph(!showGraph);
     setIsIn(true); // Set isIn to true when PieChart button is clicked
   };
 
   const fetchData = () => {
-    const url = "http://localhost:3000/packets";
+    const url = "http://localhost:3000/totalPackets";
 
     fetch(url)
       .then(response => {
@@ -69,13 +91,13 @@ function App() {
       })
       .then(packet => {
         // Update the state to show the graph when data is fetched
-        setShowGraph(true);
         setIsIn(true); // Set isIn to true when data is fetched
 
         // Display the packet in a box or log it
         console.log('Packet:', packet); // Example: Log the packet
         // Update displayText state with packet content
         setDisplayText(JSON.stringify(packet, null, 2)); // Example: Display JSON stringified packet with indentation
+        setCenterText(JSON.stringify(packet, null, 2));
       })
       .catch(error => {
         console.error('Error: ', error.message);
@@ -94,7 +116,7 @@ function App() {
       {/* Wrap MyResponsivePie component with FadeIn component */}
       <FadeIn in={isIn}>
         <div className="MyResponsivePie">
-          {showGraph && <MyResponsivePie data={data} />}
+          {showGraph && <MyResponsivePie data={data} centerText = {centerText} />}
         </div>
       </FadeIn>
 
