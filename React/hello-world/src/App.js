@@ -5,6 +5,7 @@ import CenterBox from './components/CenterBox';
 import MyResponsivePie from './components/MyResponsivePie';
 import FadeIn from './components/FadeIn'; // Import FadeIn component
 
+
 function App() {
   const [displayText, setDisplayText] = useState('');
   const [showGraph, setShowGraph] = useState(false); // State for controlling graph display
