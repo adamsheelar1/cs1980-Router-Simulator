@@ -23,12 +23,14 @@ const MyResponsiveNetwork = ({ data /* see data tab */ }) => (
             modifiers: [
                 [
                     'darker',
-                    0.8
+                    '1.5'
                 ]
             ]
         }}
         linkThickness={n=>2+2*n.target.data.height}
-        linkBlendMode="multiply"
+        linkColor={{ from: 'source.color', modifiers: [] }}
+        linkBlendMode="lighten"
         motionConfig="wobbly"
     />
-)
+);
+export default MyResponsiveNetwork;

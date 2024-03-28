@@ -22,6 +22,7 @@ code {
   padding: 20px;
 }
 
+
 .MyResponsivePie {
   /* position: fixed; */
   text-align: center;
@@ -33,6 +34,7 @@ code {
 .MyResponsivePie2 {
   animation: fade-in 3s;
 }
+
 button {
   color: white;
   padding: 5px;
@@ -98,5 +100,4 @@ body {
   background-image: url('/public/background.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  /* Add any other background styles you want */
 }
