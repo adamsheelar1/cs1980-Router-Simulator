@@ -14,17 +14,27 @@ code {
 
 .centered-box {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 20%;
+  left: 80%;
   transform: translate(-50%, -50%);
   background-color: #ffffff;
   border: 1px solid #000000;
   padding: 20px;
 }
 
+.MyResponsivePie {
+  /* position: fixed; */
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+.MyResponsivePie2 {
+  animation: fade-in 3s;
+}
 button {
   color: white;
-  /* background: linear-gradient(to right, #007bff, green); */
   padding: 5px;
   border-radius: 500px;
   width: 100px;
@@ -33,33 +43,18 @@ button {
   border: none;
   outline: none;
   margin: 10px;
-  /* top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); */
-  
-}
-button:hover {
-  background-color: darkblue;
-}
-button:active {
-  background-color: black;
-}
-button:disabled {
-  background-color: gray;
-  cursor: not-allowed;
-}
-button:disabled:hover {
-  background-color: gray;
-  cursor: not-allowed;
 }
 
+
 .container {
-  text-align: center;
+  /* position: fixed; */
+  bottom: 5%; /* Align container to the bottom */
+  width: 100%; /* Make container full width */
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 180vh; /* Optional: set the height of the container to the full viewport height */
 }
+
 
 .button:nth-child(1) {
   background: linear-gradient(to right, #007bff, hsl(0, 70%, 50%));
@@ -83,4 +78,25 @@ button:disabled:hover {
 
 .button:nth-child(6) {
   background: linear-gradient(to right, #007bff, hsl(300, 70%, 50%));
+}
+
+.button:hover {
+  background-color: darkblue;
+}
+.button:active {
+  background-color: black;
+}
+.button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+.button:disabled:hover {
+  background-color: gray;
+  cursor: not-allowed;
+}
+body {
+  background-image: url('/public/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* Add any other background styles you want */
 }

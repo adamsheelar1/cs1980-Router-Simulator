@@ -1,23 +1,10 @@
 package main
 
 import (
-	//"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-
-	//"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
-
-type packet struct {
-	Application string `json:"application"`
-	Weight   int `json:"weight"`
-}
-
-var applications map[string]int
-var totalPackets int
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -35,50 +22,42 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-func getTotalPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalPackets)
-}
-
-func getServerPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, applications["server"])
-}	
-
-func getSafetyPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, applications["safety"])
-}
-
-func getSecurityPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, applications["security"])
-}
-
-func postPacket(c *gin.Context) {
-	var newPacket packet
-
-	if err := c.BindJSON(&newPacket); err != nil {
-		log.Println(err)
-		return
-	} else {
-		totalPackets++
-		applications[newPacket.Application]++
-		fmt.Println(totalPackets)
-	}
-	
-}
-
 func main() {
 	totalPackets = 0
-	applications = make(map[string]int)
+	totalPacketsLost = 0
+	totalApplications = make(map[string]int)
+	throughApplications = make(map[string]int)
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
-	router.GET("/packets", getTotalPackets)
-	router.GET("/server", getServerPackets)
-	router.GET("/safety", getSafetyPackets)
-	router.GET("/security", getSecurityPackets)
+	router.GET("/packets", getPackets)
+	router.GET("/totalPacketsLost", getTotalPacketsLost)
+	router.GET("/totalPackets", getTotalPackets)
+	router.GET("/server", getServerThrough)
+	router.GET("/serverTotal", getServerTotal)
+	router.GET("/safety", getSafetyThrough)
+	router.GET("/safetyTotal", getSafetyTotal)
+	router.GET("/security", getSecurityThrough)
+	router.GET("/securityTotal", getSecurityTotal)
 
 	router.POST("/packets", postPacket)
+	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
-	router.Run("localhost:3000")
+	router.Run("0.0.0.0:3000")
+	// https://localhost:3000/
 
+	ticker := time.NewTicker(5 * time.Second)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
+				runAlgorithm()
+			}
+		}
+	}()
 }
