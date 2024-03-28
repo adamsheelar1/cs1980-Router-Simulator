@@ -8,7 +8,6 @@ import FadeIn from './components/FadeIn'; // Import FadeIn component
 import jsonData from './Network.json'; // Import JSON data file
 
 
-
 function App() {
   const [displayText, setDisplayText] = useState('');
   const [showPieGraph, setShowPieGraph] = useState(false); // State for controlling graph display
@@ -25,44 +24,8 @@ function App() {
   const [randomIndex, setRandomIndex] = useState(0);
   const [centerText, setCenterText] = useState(0);
 
-  function updateData() {
-    // Generate a random index to select a random element from the data array
-    const newIndex = randomIndex
-    // Update the value of the randomly selected element
-    setData(prevData => {
-      // Create a copy of the previous data array
-      const newData = [...prevData];
-
-      // Update the value of the selected element
-      newData[newIndex] = {
-        ...newData[newIndex],
-        value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
-      };
-
-      return newData;
-    });
-  }
-
-  function updateTotalPackets() {
-    const newIndex = centerText
-    // Update the value of the randomly selected element
-    setCenterText(prevData => {
-      // Create a copy of the previous data array
-      const newData = fetchData;
-
-      // // Update the value of the selected element
-      // newData[newIndex] = {
-      //     ...newData[newIndex],
-      //     value: newData[newIndex].value + Math.floor(Math.random() * 10) + 1
-      // };
-
-      return newData;
-    });
-  }
-
   useEffect(() => {
     const interval = setInterval(() => {
-      // updateData();
       fetchData();
       fetchTotalPackets();
 
@@ -85,7 +48,7 @@ function App() {
   };
 
   const fetchData = () => {
-    const url = "http://api:3000/packets";
+    const url = "http://localhost:3000/packets";
 
     fetch(url)
       .then(response => {
@@ -149,7 +112,7 @@ function App() {
       })
       .catch(error => {
         console.error('Error: ', error.message);
-        setDisplayText('Error fetching total'); // Display error message
+        setDisplayText('Error fetching data'); // Display error message
       });
   };
 
