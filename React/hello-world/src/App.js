@@ -4,30 +4,53 @@ import Button from './components/Button';
 import CenterBox from './components/CenterBox';
 import MyResponsivePie from './components/MyResponsivePie';
 import MyResponsiveNetwork from './components/MyResponsiveNetwork';
+import MyResponsiveBar from './components/MyResponsiveBar';
 import FadeIn from './components/FadeIn'; // Import FadeIn component
-import jsonData from './Network.json'; // Import JSON data file
+import initialData from './Network.json'; // Import JSON data file
 
 
 function App() {
   const [displayText, setDisplayText] = useState('');
   const [showPieGraph, setShowPieGraph] = useState(false); // State for controlling graph display
   const [showNetGraph, setShowNetGraph] = useState(false); // State for controlling graph display
+  const [showBarGraph, setShowBarGraph] = useState(false); // State for controlling graph display
+
 
   const [isIn, setIsIn] = useState(false); // State for controlling fade-in animation
+
   const [data, setData] = useState([
-    { id: 'Saftey', value: 100 },
-    { id: 'Security', value: 200 },
-    { id: 'Server', value: 300 },
+    { id: 'Saftey', value: 0 },
+    { id: 'Security', value: 0 },
+    { id: 'Server', value: 0 },
   ]);
-  const initialData = jsonData;
   const [netData, setNetData] = useState(initialData);
-  const [randomIndex, setRandomIndex] = useState(0);
+  const [barData, setBarData] = useState([
+    {
+      country: 'Saftey',
+      Accepted: 70,
+      Lost: 30,
+    },
+    {
+      country: 'Security',
+      Accepted: 60,
+      Lost: 40,
+    },
+    {
+      country: 'Server',
+      Accepted: 80,
+      Lost: 20,
+    },
+  ]);
+
+  
+
   const [centerText, setCenterText] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       fetchData();
       fetchTotalPackets();
+      fetchBarData();
 
     }, 2); // Update every 2 seconds
 
@@ -45,6 +68,9 @@ function App() {
   };
   const networkClick = () => {
     setShowNetGraph(!showNetGraph);
+  };
+  const barClick = () => {
+    setShowBarGraph(!showBarGraph);
   };
 
   const fetchData = () => {
@@ -70,7 +96,6 @@ function App() {
         // Display the packet in a box or log it
         console.log('Packet:', packet); // Example: Log the packet
         // Update displayText state with packet content
-        setDisplayText(JSON.stringify(packet, null, 2)); // Example: Display JSON stringified packet with indentation
 
         // Update the data state based on the packet
         setData([
@@ -115,6 +140,43 @@ function App() {
         setDisplayText('Error fetching data'); // Display error message
       });
   };
+  const fetchBarData = () => {
+    const url = "http://localhost:3000/packets";
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Response is not in JSON format');
+        }
+
+        return response.json();
+      })
+      .then(packet => {
+        // Update the state to show the graph when data is fetched
+        setIsIn(true); // Set isIn to true when data is fetched
+
+        // Display the packet in a box or log it
+        console.log('Packet:', packet); // Example: Log the packet
+        // Update displayText state with packet content
+        setDisplayText(JSON.stringify(packet, null, 2)); // Example: Display JSON stringified packet with indentation
+
+        // Update the data state based on the packet
+        setBarData([
+          { country: 'Safety', Accepted: packet.safety, Lost: 5 },
+          { country: 'Security', Accepted: packet.security, Lost: 5 },
+          { country: 'Server', Accepted: packet.server, Lost: 5},
+        ]);
+      })
+      .catch(error => {
+        console.error('Error: ', error.message);
+        setDisplayText('Error fetching data'); // Display error message
+      });
+  };
 
 
   return (
@@ -130,7 +192,7 @@ function App() {
         <div className="MyResponsivePie">
           {showPieGraph && <MyResponsivePie data={data} centerText={centerText} />}
           {showNetGraph && <MyResponsiveNetwork data={netData} />}
-          
+          {showBarGraph && <MyResponsiveBar data={barData} />}
         </div>
       </FadeIn>
 
@@ -146,7 +208,7 @@ function App() {
         <Button onClick={() => fetchData()}>Fetch Data</Button>
         <Button onClick={() => PieChartClick()}>PieChart</Button>
         <Button onClick={() => networkClick()}>Network</Button>
-        <Button onClick={() => handleClick(1)}>B</Button>
+        <Button onClick={() => barClick()}>Stacked Bar</Button>
         <Button onClick={() => handleClick(2)}>C</Button>
         <Button onClick={() => handleClick(3)}>D</Button>
       </div>
