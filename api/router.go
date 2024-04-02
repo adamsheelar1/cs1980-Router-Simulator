@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 //"fmt"
 
@@ -39,15 +42,22 @@ var priority = map[string]int{
 
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
+	fmt.Println("Printing buffer before copy")
+	fmt.Println(buffer)
 	networkCapacity = 1000
 	var newBuffer = []ExpandedPacket{}
-	copy(newBuffer, buffer)
+	newBuffer = append(newBuffer, buffer...)
 	buffer = nil
 
+	fmt.Println("Printing buffer after copy")
+	fmt.Println(newBuffer)
 	// sort newBuffer
 	sort.Slice(newBuffer, func(i, j int) bool {
 		return newBuffer[i].Priority > newBuffer[j].Priority
 	})
+
+	fmt.Println("Printing buffer after sort")
+	fmt.Println(newBuffer)
 	
 	cap := networkCapacity
 

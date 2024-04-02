@@ -1,6 +1,10 @@
 package main
 
 import (
+	//"fmt"
+	//"time"
+
+	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -44,10 +48,7 @@ func main() {
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
-	router.Run("localhost:3000")
-	// https://localhost:3000/
-
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(10 * time.Second)
 	done := make(chan bool)
 
 	go func() {
@@ -57,7 +58,11 @@ func main() {
 				return
 			case <- ticker.C:
 			runAlgorithm()	
+			fmt.Println("ran algo")
 			}
 		}
 	}()
+
+	router.Run("localhost:3000")
+	// https://localhost:3000/
 }

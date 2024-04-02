@@ -9,8 +9,8 @@ import (
 )
 
 func getPackets(c *gin.Context) {
-	fmt.Println(totalApplications)
-	c.IndentedJSON(http.StatusOK, totalApplications)
+	fmt.Println(throughApplications)
+	c.IndentedJSON(http.StatusOK, throughApplications)
 }
 
 func getTotalPackets(c *gin.Context) {
@@ -57,15 +57,18 @@ func postPacket(c *gin.Context) {
 		totalPackets++
 		newPacket.packet = packetIn
 		newPacket.Priority = priority[newPacket.packet.Application]
-		fmt.Println()
+
 		// naive approach to creating the profit we would get from using this item in the knapsack
 		newPacket.Profit = newPacket.Priority / newPacket.packet.Weight
 
+		fmt.Println("Contents of new packet we are posting")
+		fmt.Println(newPacket)
 		// store this bigger packet
 		buffer = append(buffer, newPacket)
+		fmt.Println(buffer)
 
 		totalApplications[newPacket.packet.Application]++
-		fmt.Println(totalPackets)
+		//fmt.Println(totalPackets)
 	}
 }
 
