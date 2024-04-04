@@ -10,7 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
+	"github.com/gin-gonic/gin"
 	//"log"
 	"net/http"
 	//"time"
@@ -37,13 +37,7 @@ func main() {
 	// just want to call spawnClients()
 	ctx, cancel := context.WithCancel(context.Background())
 	sigc := make(chan os.Signal, 1)
-	signal.Notify(sigc,
-		syscall.SIGHUP,
-		syscall.SIGINT,
-		syscall.SIGTERM,
-		syscall.SIGQUIT)
 	spawnClients(ctx)
-
 	<-sigc
 	cancel()
 
