@@ -6,10 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
+	"sync"
 	"time"
-	"math/rand"
 )
 
 // packetData type
@@ -26,6 +27,8 @@ type clientData struct {
 
 var clients = []clientData {
 }
+
+var m sync.Mutex
 
 func spawnClients(ctx context.Context) {
 
