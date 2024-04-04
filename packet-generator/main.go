@@ -41,6 +41,9 @@ func main() {
 	<-sigc
 	cancel()
 
+	router := gin.Default()
+	router.Run("0.0.0.0:2000")
+
 }
 
 func sendPacket(packet packetData) {
