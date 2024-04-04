@@ -20,11 +20,11 @@ func deleteClient(c *gin.Context) {
 }
 
 func runSimulation(c *gin.Context) {
-
 		ctx, cancel := context.WithCancel(context.Background())
 		sigc := make(chan os.Signal, 1)
 		spawnClients(ctx)
 		<-sigc
 		cancel()
-		
+
 }
+

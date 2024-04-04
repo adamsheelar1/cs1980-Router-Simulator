@@ -25,6 +25,7 @@ func main() {
 
 	router := gin.Default()
 
+	router.GET("/clientsList")
 	router.POST("/addClient", addClient)
 	router.DELETE("/deleteClient", deleteClient)
 	router.POST("/runSimulation", runSimulation)

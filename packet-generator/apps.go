@@ -14,29 +14,26 @@ import (
 
 // packetData type
 type packetData struct {
-	Application string `json:"application"`
+	Client string `json:"application"`
 	Weight int	`json:"weight"`
 }
 
-var applications = []string{
-	"server", 
-	"safety",
-	"security",
+type clientData struct {
+	Client string `json:"client"`
+	WeightCap int `json:"weightcap"`
+	FrequencyCap int `json:"frequencycap"`
 }
 
-var weights = []int{
-	100,
-	150,
-	150,
+var clients = []clientData {
 }
 
 func spawnClients(ctx context.Context) {
 
-	for i := 0; i < len(applications); i++ {
+	for i := 0; i < len(clients); i++ {
 		ticker := time.NewTicker(time.Duration(rd.TimeInterval) * time.Second)
 		var packet packetData
-		packet.Application = applications[i]
-		packet.Weight = weights[i]
+		packet.Client = clients[i].Client
+		packet.Weight = rand.Intn(clients[i].WeightCap)
 		go func()  {
 			for {
 				select {
@@ -45,13 +42,12 @@ func spawnClients(ctx context.Context) {
 				case <- ticker.C:
 					sendPacket(packet)
 					//fmt.Println("")
-					time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-					ticker.Reset(time.Duration(rand.Intn(4)+2) * time.Second)
+					time.Sleep(time.Duration(rand.Intn(clients[i].FrequencyCap)) * time.Second)
+					ticker.Reset(time.Duration(rand.Intn(clients[i].FrequencyCap)*2) * time.Second)
 				}
 			}
 		}()
 	}
-
 }
 
 func sendPacket(packet packetData) {
