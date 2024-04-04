@@ -1,9 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
 	"time"
-
 	"math/rand"
 )
 
@@ -47,6 +52,36 @@ func spawnClients(ctx context.Context) {
 		}()
 	}
 
+}
+
+func sendPacket(packet packetData) {
+	// hard coded url of the api
+	url := "http://api:3000/packets"
+	payload, err := json.Marshal(packet)
+	fmt.Fprintf(os.Stdout, "%s", payload)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
+
+	fmt.Println(string(body))
+	res.Body.Close()
 }
 
 
