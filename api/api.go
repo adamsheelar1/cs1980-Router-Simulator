@@ -2,9 +2,8 @@ package main
 
 import (
 	//"fmt"
-	//"time"
 
-	"fmt"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +30,7 @@ func main() {
 	totalPacketsLost = 0
 	totalApplications = make(map[string]int)
 	throughApplications = make(map[string]int)
+
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())

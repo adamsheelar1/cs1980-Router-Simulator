@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"sync"
 )
 
 //"fmt"
@@ -34,6 +35,8 @@ var totalPacketsLost int
 // for changing the algorithm while its running
 var networkCapacity int
 
+var m sync.Mutex
+
 var priority = map[string]int{
 	"server" : 1000,
 	"safety" : 1500,
@@ -46,8 +49,10 @@ func runAlgorithm() {
 	fmt.Println(buffer)
 	networkCapacity = 1000
 	var newBuffer = []ExpandedPacket{}
+	m.Lock()
 	newBuffer = append(newBuffer, buffer...)
 	buffer = nil
+	m.Unlock()
 
 	fmt.Println("Printing buffer after copy")
 	fmt.Println(newBuffer)

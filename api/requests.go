@@ -64,7 +64,9 @@ func postPacket(c *gin.Context) {
 		fmt.Println("Contents of new packet we are posting")
 		fmt.Println(newPacket)
 		// store this bigger packet
+		m.Lock()
 		buffer = append(buffer, newPacket)
+		m.Unlock()
 		fmt.Println(buffer)
 
 		totalApplications[newPacket.packet.Application]++
