@@ -5,8 +5,6 @@ import (
 	"sync"
 )
 
-//"fmt"
-
 type Packet struct {
 	Application string `json:"application"`
 	Weight      int    `json:"weight"`
@@ -20,17 +18,16 @@ type ExpandedPacket struct {
 
 var buffer = []ExpandedPacket{}
 
+// the number of application packets
 var totalApplications map[string]int
 
 // the number of application packets that make it through
 // missing packets per app = total - through
 var throughApplications map[string]int
 
-
 var totalPackets int
 var totalPacketsLost int
 
-// configurable network capacity via a POST request
 // for changing the algorithm while its running
 var networkCapacity int
 
