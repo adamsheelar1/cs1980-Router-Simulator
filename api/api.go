@@ -1,11 +1,7 @@
 package main
 
 import (
-	//"fmt"
-
-	"sync"
 	"time"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +24,7 @@ func CORSMiddleware() gin.HandlerFunc {
 func main() {
 	totalPackets = 0
 	totalPacketsLost = 0
+	networkCapacity = 1000
 	totalApplications = make(map[string]int)
 	throughApplications = make(map[string]int)
 
@@ -36,19 +33,14 @@ func main() {
 	router.Use(CORSMiddleware())
 
 	router.GET("/packets", getPackets)
+	router.GET("/throughPackets,", getThroughPackets)
 	router.GET("/totalPacketsLost", getTotalPacketsLost)
 	router.GET("/totalPackets", getTotalPackets)
-	router.GET("/server", getServerThrough)
-	router.GET("/serverTotal", getServerTotal)
-	router.GET("/safety", getSafetyThrough)
-	router.GET("/safetyTotal", getSafetyTotal)
-	router.GET("/security", getSecurityThrough)
-	router.GET("/securityTotal", getSecurityTotal)
 
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
-	router.Run("0.0.0.0:3000")
+
 	// https://localhost:3000/
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -64,6 +56,8 @@ func main() {
 			}
 		}
 	}()
+
+	router.Run("0.0.0.0:3000")
 
 	router.Run("localhost:3000")
 	// https://localhost:3000/

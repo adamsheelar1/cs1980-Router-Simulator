@@ -9,7 +9,10 @@ import (
 )
 
 func getPackets(c *gin.Context) {
-	fmt.Println(throughApplications)
+	c.IndentedJSON(http.StatusOK, totalApplications)
+}
+
+func getThroughPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, throughApplications)
 }
 
@@ -19,31 +22,6 @@ func getTotalPackets(c *gin.Context) {
 
 func getTotalPacketsLost(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPacketsLost)
-}
-
-func getServerThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["server"])
-}	
-
-func getServerTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["server"])
-}	
-
-
-func getSafetyThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["safety"])
-}
-
-func getSafetyTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["safety"])
-}
-
-func getSecurityThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["security"])
-}
-
-func getSecurityTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["security"])
 }
 
 func postPacket(c *gin.Context) {
@@ -56,18 +34,14 @@ func postPacket(c *gin.Context) {
 	} else {
 		totalPackets++
 		newPacket.packet = packetIn
-		newPacket.Priority = priority[newPacket.packet.Application]
 
 		// naive approach to creating the profit we would get from using this item in the knapsack
-		newPacket.Profit = newPacket.Priority / newPacket.packet.Weight
+		newPacket.Profit = newPacket.packet.Priority / newPacket.packet.Weight
 
-		fmt.Println("Contents of new packet we are posting")
-		fmt.Println(newPacket)
 		// store this bigger packet
 		m.Lock()
 		buffer = append(buffer, newPacket)
 		m.Unlock()
-		fmt.Println(buffer)
 
 		totalApplications[newPacket.packet.Application]++
 		//fmt.Println(totalPackets)
