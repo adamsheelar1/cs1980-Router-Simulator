@@ -27,6 +27,7 @@ func main() {
 
 	router.GET("/getClients", getClients)
 	router.POST("/addClient", addClient)
+	router.POST("/updateClientData", updateClientData)
 	router.DELETE("/deleteClient", deleteClient)
 	router.POST("/runSimulation", runSimulation)
 

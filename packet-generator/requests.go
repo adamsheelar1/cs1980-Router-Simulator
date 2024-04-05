@@ -35,6 +35,27 @@ func addClient(c *gin.Context) {
 	}
 }
 
+func updateClientData(c *gin.Context) {
+	var updateData clientData
+
+	if err := c.BindJSON(&updateData); err != nil {
+		log.Println(err)
+		return
+	} else {
+		for i := 0; i < len(clients); i++ {
+			if (clients[i].Client == updateData.Client) {
+				m.Lock()
+				clients[i].WeightCap = updateData.WeightCap
+				clients[i].FrequencyCap = updateData.FrequencyCap
+				clients[i].PrioritySeed = updateData.PrioritySeed
+				m.Unlock()
+				break
+			}
+		}	
+		fmt.Println("client not found during updateClientData call")
+	}
+}
+
 func deleteClient(c *gin.Context) {
 	var clientToDelete string
 
@@ -51,6 +72,7 @@ func deleteClient(c *gin.Context) {
 				break
 			}
 		}
+		fmt.Println("client not found during deleteClient call")
 	}
 
 }
