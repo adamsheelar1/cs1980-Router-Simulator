@@ -1,37 +1,45 @@
 package main
 
 import (
+	"bytes"
 	"context"
-	"time"
-
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
+	"os"
+	"sync"
+	"time"
 )
 
 // packetData type
 type packetData struct {
-	Application string `json:"application"`
+	Client string `json:"application"`
 	Weight int	`json:"weight"`
+	Priority int `json:"priority"`
 }
 
-var applications = []string{
-	"server", 
-	"safety",
-	"security",
+type clientData struct {
+	Client string `json:"client"`
+	WeightCap int `json:"weightcap"`
+	FrequencyCap int `json:"frequencycap"`
+	PrioritySeed int `json:"priorityseed"`
 }
 
-var weights = []int{
-	100,
-	150,
-	150,
+var clients = []clientData {
 }
+
+var m sync.Mutex
 
 func spawnClients(ctx context.Context) {
 
-	for i := 0; i < len(applications); i++ {
+	for i := 0; i < len(clients); i++ {
 		ticker := time.NewTicker(time.Duration(rd.TimeInterval) * time.Second)
 		var packet packetData
-		packet.Application = applications[i]
-		packet.Weight = weights[i]
+		packet.Client = clients[i].Client
+		packet.Weight = rand.Intn(clients[i].WeightCap)
+		packet.Priority = rand.Intn(clients[i].PrioritySeed) * 100
 		go func()  {
 			for {
 				select {
@@ -40,13 +48,42 @@ func spawnClients(ctx context.Context) {
 				case <- ticker.C:
 					sendPacket(packet)
 					//fmt.Println("")
-					time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-					ticker.Reset(time.Duration(rand.Intn(4)+2) * time.Second)
+					time.Sleep(time.Duration(rand.Intn(clients[i].FrequencyCap)) * time.Second)
+					ticker.Reset(time.Duration(rand.Intn(clients[i].FrequencyCap)*2) * time.Second)
 				}
 			}
 		}()
 	}
+}
 
+func sendPacket(packet packetData) {
+	// hard coded url of the api
+	url := "http://api:3000/packets"
+	payload, err := json.Marshal(packet)
+	fmt.Fprintf(os.Stdout, "%s", payload)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		//Specific error handling would depend on scenario
+		fmt.Printf("%v\n", err)
+		return
+	}
+
+	fmt.Println(string(body))
+	res.Body.Close()
 }
 
 
