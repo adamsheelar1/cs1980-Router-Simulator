@@ -1,11 +1,7 @@
 package main
 
 import (
-	//"fmt"
-
-	"sync"
 	"time"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,12 +34,6 @@ func main() {
 	router.GET("/packets", getPackets)
 	router.GET("/totalPacketsLost", getTotalPacketsLost)
 	router.GET("/totalPackets", getTotalPackets)
-	router.GET("/server", getServerThrough)
-	router.GET("/serverTotal", getServerTotal)
-	router.GET("/safety", getSafetyThrough)
-	router.GET("/safetyTotal", getSafetyTotal)
-	router.GET("/security", getSecurityThrough)
-	router.GET("/securityTotal", getSecurityTotal)
 
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)

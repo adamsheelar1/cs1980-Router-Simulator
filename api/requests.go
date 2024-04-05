@@ -21,31 +21,6 @@ func getTotalPacketsLost(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPacketsLost)
 }
 
-func getServerThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["server"])
-}	
-
-func getServerTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["server"])
-}	
-
-
-func getSafetyThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["safety"])
-}
-
-func getSafetyTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["safety"])
-}
-
-func getSecurityThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["security"])
-}
-
-func getSecurityTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["security"])
-}
-
 func postPacket(c *gin.Context) {
 	var packetIn Packet
 	var newPacket ExpandedPacket
