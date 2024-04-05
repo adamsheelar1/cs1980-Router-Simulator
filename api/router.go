@@ -38,7 +38,6 @@ var m sync.Mutex
 
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
-	networkCapacity = 1000
 	var newBuffer = []ExpandedPacket{}
 	m.Lock()
 	newBuffer = append(newBuffer, buffer...)
