@@ -38,7 +38,7 @@ func main() {
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
-	router.Run("0.0.0.0:3000")
+
 	// https://localhost:3000/
 
 	ticker := time.NewTicker(5 * time.Second)
@@ -55,6 +55,8 @@ func main() {
 		}
 	}()
 
+	router.Run("0.0.0.0:3000")
+	
 	router.Run("localhost:3000")
 	// https://localhost:3000/
 }

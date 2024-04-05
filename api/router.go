@@ -36,12 +36,6 @@ var networkCapacity int
 
 var m sync.Mutex
 
-var priority = map[string]int{
-	"server" : 1000,
-	"safety" : 1500,
-	"security" : 1300,
-}
-
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
 	networkCapacity = 1000
@@ -53,10 +47,9 @@ func runAlgorithm() {
 
 	// sort newBuffer
 	sort.Slice(newBuffer, func(i, j int) bool {
-		return newBuffer[i].Priority > newBuffer[j].Priority
+		return newBuffer[i].packet.Priority > newBuffer[j].packet.Priority
 	})
 
-	
 	cap := networkCapacity
 
 	for i := 1; i < len(newBuffer); i++ {
