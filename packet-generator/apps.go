@@ -17,12 +17,14 @@ import (
 type packetData struct {
 	Client string `json:"application"`
 	Weight int	`json:"weight"`
+	Priority int `json:"priority"`
 }
 
 type clientData struct {
 	Client string `json:"client"`
 	WeightCap int `json:"weightcap"`
 	FrequencyCap int `json:"frequencycap"`
+	PrioritySeed int `json:"priorityseed"`
 }
 
 var clients = []clientData {
@@ -37,6 +39,7 @@ func spawnClients(ctx context.Context) {
 		var packet packetData
 		packet.Client = clients[i].Client
 		packet.Weight = rand.Intn(clients[i].WeightCap)
+		packet.Priority = rand.Intn(clients[i].PrioritySeed) * 100
 		go func()  {
 			for {
 				select {
