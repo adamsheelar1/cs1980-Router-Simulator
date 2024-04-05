@@ -31,13 +31,10 @@ func postPacket(c *gin.Context) {
 	} else {
 		totalPackets++
 		newPacket.packet = packetIn
-		newPacket.Priority = priority[newPacket.packet.Application]
 
 		// naive approach to creating the profit we would get from using this item in the knapsack
-		newPacket.Profit = newPacket.Priority / newPacket.packet.Weight
+		newPacket.Profit = newPacket.packet.Priority / newPacket.packet.Weight
 
-		fmt.Println("Contents of new packet we are posting")
-		fmt.Println(newPacket)
 		// store this bigger packet
 		m.Lock()
 		buffer = append(buffer, newPacket)
