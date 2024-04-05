@@ -40,9 +40,6 @@ func main() {
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
 
-
-	// https://localhost:3000/
-
 	ticker := time.NewTicker(5 * time.Second)
 	done := make(chan bool)
 
