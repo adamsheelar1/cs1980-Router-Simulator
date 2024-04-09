@@ -25,15 +25,15 @@ func main() {
 	totalPackets = 0
 	totalPacketsLost = 0
 	networkCapacity = 1000
-	totalApplications = make(map[string]int)
-	throughApplications = make(map[string]int)
+	totalClientData = make(map[string]int)
+	throughClientData = make(map[string]int)
 
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
 	router.GET("/packets", getPackets)
-	router.GET("/throughPackets,", getThroughPackets)
+	router.GET("/throughPackets", getThroughPackets)
 	router.GET("/totalPacketsLost", getTotalPacketsLost)
 	router.GET("/totalPackets", getTotalPackets)
 

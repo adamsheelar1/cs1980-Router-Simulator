@@ -6,7 +6,7 @@ import (
 )
 
 type Packet struct {
-	Application string `json:"application"`
+	Client string `json:"client"`
 	Weight      int    `json:"weight"`
 	Priority int 	   `json:"priority"`
 }
@@ -19,11 +19,11 @@ type ExpandedPacket struct {
 var buffer = []ExpandedPacket{}
 
 // the number of application packets
-var totalApplications map[string]int
+var totalClientData map[string]int
 
 // the number of application packets that make it through
 // missing packets per app = total - through
-var throughApplications map[string]int
+var throughClientData map[string]int
 
 var totalPackets int
 var totalPacketsLost int
@@ -51,7 +51,7 @@ func runAlgorithm() {
 	for i := 1; i < len(newBuffer); i++ {
 		if cap > newBuffer[i].packet.Weight {
 			cap -= newBuffer[i].packet.Weight
-			throughApplications[newBuffer[i].packet.Application]++
+			throughClientData[newBuffer[i].packet.Client]++
 		} else {
 			totalPacketsLost++
 		}

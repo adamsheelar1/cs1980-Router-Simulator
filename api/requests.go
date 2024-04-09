@@ -8,11 +8,11 @@ import (
 )
 
 func getPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications)
+	c.IndentedJSON(http.StatusOK, totalClientData)
 }
 
 func getThroughPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications)
+	c.IndentedJSON(http.StatusOK, throughClientData)
 }
 
 func getTotalPackets(c *gin.Context) {
@@ -42,7 +42,7 @@ func postPacket(c *gin.Context) {
 		buffer = append(buffer, newPacket)
 		m.Unlock()
 
-		totalApplications[newPacket.packet.Application]++
+		totalClientData[newPacket.packet.Client]++
 		//fmt.Println(totalPackets)
 	}
 }
