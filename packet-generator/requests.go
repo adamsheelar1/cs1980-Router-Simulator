@@ -22,6 +22,18 @@ func getClients(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, clientNames)
 }
 
+func getClientsByName(c *gin.Context) {
+	clientName := c.Param("Client")
+
+	for _, a:= range clients {
+		if a.Client == clientName {
+			c.IndentedJSON(http.StatusOK, clientName)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "albumnot found"})
+}
+
 func addClient(c *gin.Context) {
 	var newClient clientData
 
@@ -49,7 +61,7 @@ func updateClientData(c *gin.Context) {
 				clients[i].FrequencyCap = updateData.FrequencyCap
 				clients[i].PrioritySeed = updateData.PrioritySeed
 				m.Unlock()
-				break
+				return
 			}
 		}	
 		fmt.Println("client not found during updateClientData call")
@@ -69,7 +81,7 @@ func deleteClient(c *gin.Context) {
 				clients = append(clients[:i],clients[i+1:]...)
 				m.Unlock()
 				fmt.Println("successfully removed client from clients")
-				break
+				return
 			}
 		}
 		fmt.Println("client not found during deleteClient call")
