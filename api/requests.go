@@ -11,8 +11,30 @@ func getPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalClientData)
 }
 
+func getPacketsByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := totalClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
 func getThroughPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, throughClientData)
+}
+
+func getThroughPacketsByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := throughClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
 func getTotalPackets(c *gin.Context) {
