@@ -27,15 +27,19 @@ type clientData struct {
 	PrioritySeed int `json:"priorityseed"`
 }
 
+type runData struct {
+	SimulationRate int `json:"simulationrate"`
+}
+
 var clients = []clientData {
 }
 
 var m sync.Mutex
 
-func spawnClients(ctx context.Context) {
+func spawnClients(ctx context.Context, sr int) {
 
 	for i := 0; i < len(clients); i++ {
-		ticker := time.NewTicker(time.Duration(rd.TimeInterval) * time.Second)
+		ticker := time.NewTicker(time.Duration(sr) * time.Second)
 		var packet packetData
 		packet.Client = clients[i].Client
 		packet.Weight = rand.Intn(clients[i].WeightCap)

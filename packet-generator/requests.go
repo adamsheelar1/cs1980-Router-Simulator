@@ -91,10 +91,16 @@ func deleteClient(c *gin.Context) {
 
 
 func runSimulation(c *gin.Context) {
-		ctx, cancel := context.WithCancel(context.Background())
-		sigc := make(chan os.Signal, 1)
-		spawnClients(ctx)
-		<-sigc
-		cancel()
+		var runData runData
+		if err := c.BindJSON(&runData); err != nil {
+			log.Println(err)
+			return
+		} else {
+			ctx, cancel := context.WithCancel(context.Background())
+			sigc := make(chan os.Signal, 1)
+			spawnClients(ctx, runData.SimulationRate)
+			<-sigc
+			cancel()
+		}
 }
 
