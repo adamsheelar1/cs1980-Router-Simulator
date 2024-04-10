@@ -25,16 +25,24 @@ var totalClientData map[string]int
 // missing packets per app = total - through
 var throughClientData map[string]int
 
+var lostClientData map[string]int
+
+var totalClientWeight map[string]int
+var throughClientWeight map[string]int
+
 var totalPackets int
 var totalPacketsLost int
 
 // for changing the algorithm while its running
 var networkCapacity int
 
+var algoCount int
+
 var m sync.Mutex
 
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
+	algoCount++
 	var newBuffer = []ExpandedPacket{}
 	m.Lock()
 	newBuffer = append(newBuffer, buffer...)
@@ -50,9 +58,11 @@ func runAlgorithm() {
 
 	for i := 1; i < len(newBuffer); i++ {
 		if cap > newBuffer[i].packet.Weight {
-			cap -= newBuffer[i].packet.Weight
+			cap-= newBuffer[i].packet.Weight
+			throughClientWeight[newBuffer[i].packet.Client]+= newBuffer[i].packet.Weight
 			throughClientData[newBuffer[i].packet.Client]++
 		} else {
+			lostClientData[newBuffer[i].packet.Client]++
 			totalPacketsLost++
 		}
 	}

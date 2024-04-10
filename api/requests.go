@@ -37,12 +37,72 @@ func getThroughPacketsByClient(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
+func getWeight(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, totalClientWeight)
+}
+
+func getWeightByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := totalClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
+func getThroughWeight(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, throughClientWeight)
+}
+
+func getThroughWeightByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := throughClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
+func getPacketsLost(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, lostClientData)
+}
+
+func getPacketsLostByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := lostClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
 func getTotalPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPackets)
 }
 
 func getTotalPacketsLost(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPacketsLost)
+}
+
+// func getThroughput(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, )
+// }
+
+func getThroughputByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := throughClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val/algoCount)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
 func postPacket(c *gin.Context) {
@@ -65,6 +125,7 @@ func postPacket(c *gin.Context) {
 		m.Unlock()
 
 		totalClientData[newPacket.packet.Client]++
+		totalClientWeight[newPacket.packet.Client]+= newPacket.packet.Weight
 		//fmt.Println(totalPackets)
 	}
 }
