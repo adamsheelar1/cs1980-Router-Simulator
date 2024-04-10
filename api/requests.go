@@ -59,6 +59,21 @@ func getThroughWeightByClient(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
+func getPacketsLost(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, lostClientData)
+}
+
+func getPacketsLostByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := lostClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
 func getTotalPackets(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPackets)
 }

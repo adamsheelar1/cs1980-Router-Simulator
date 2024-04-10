@@ -37,12 +37,18 @@ func main() {
 
 	router.GET("/packets", getPackets)
 	router.GET("/packets/:Client", getPacketsByClient)
+
 	router.GET("/throughPackets", getThroughPackets)
 	router.GET("/throughPackets/:Client", getThroughPacketsByClient)
+
 	router.GET("/weight/:Client", getWeightByClient)
 	router.GET("/throughWeight/:Client", getThroughWeightByClient)
-	router.GET("/totalPacketsLost", getTotalPacketsLost)
+
+	router.GET("/PacketsLost", getPacketsLost)
+	router.GET("/PacketsLost/:Client", getPacketsLostByClient)
+
 	router.GET("/totalPackets", getTotalPackets)
+	router.GET("/totalPacketsLost", getTotalPacketsLost)
 
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
