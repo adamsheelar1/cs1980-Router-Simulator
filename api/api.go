@@ -41,7 +41,10 @@ func main() {
 	router.GET("/throughPackets", getThroughPackets)
 	router.GET("/throughPackets/:Client", getThroughPacketsByClient)
 
+	router.GET("/weight", getWeight)
 	router.GET("/weight/:Client", getWeightByClient)
+
+	router.GET("/throughWeight", getThroughWeight)
 	router.GET("/throughWeight/:Client", getThroughWeightByClient)
 
 	router.GET("/PacketsLost", getPacketsLost)
