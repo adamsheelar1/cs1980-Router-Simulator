@@ -31,7 +31,6 @@ func main() {
 	throughClientWeight = make(map[string]int)
 	lostClientData = make(map[string]int)
 
-
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 
@@ -52,6 +51,9 @@ func main() {
 
 	router.GET("/totalPackets", getTotalPackets)
 	router.GET("/totalPacketsLost", getTotalPacketsLost)
+
+	//router.GET("/throughput", getThroughput)
+	router.GET("/throughput/:Client", getThroughputByClient)
 
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)

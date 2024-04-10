@@ -90,6 +90,21 @@ func getTotalPacketsLost(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPacketsLost)
 }
 
+// func getThroughput(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, )
+// }
+
+func getThroughputByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := throughClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val/algoCount)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
 func postPacket(c *gin.Context) {
 	var packetIn Packet
 	var newPacket ExpandedPacket
