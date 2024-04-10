@@ -27,6 +27,8 @@ func main() {
 	networkCapacity = 1000
 	totalClientData = make(map[string]int)
 	throughClientData = make(map[string]int)
+	totalClientWeight = make(map[string]int)
+	throughClientWeight = make(map[string]int)
 
 
 	router := gin.Default()
@@ -36,11 +38,14 @@ func main() {
 	router.GET("/packets/:Client", getPacketsByClient)
 	router.GET("/throughPackets", getThroughPackets)
 	router.GET("/throughPackets/:Client", getThroughPacketsByClient)
+	router.GET("/weight/:Client", getWeightByClient)
+	router.GET("/throughWeight/:Client", getThroughWeightByClient)
 	router.GET("/totalPacketsLost", getTotalPacketsLost)
 	router.GET("/totalPackets", getTotalPackets)
 
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
+	
 
 	ticker := time.NewTicker(5 * time.Second)
 	done := make(chan bool)
