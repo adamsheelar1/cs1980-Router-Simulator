@@ -29,6 +29,7 @@ func main() {
 	throughClientData = make(map[string]int)
 	totalClientWeight = make(map[string]int)
 	throughClientWeight = make(map[string]int)
+	lostClientData = make(map[string]int)
 
 
 	router := gin.Default()

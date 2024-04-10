@@ -25,8 +25,12 @@ var totalClientData map[string]int
 // missing packets per app = total - through
 var throughClientData map[string]int
 
+var lostClientData map[string]int
+
 var totalClientWeight map[string]int
 var throughClientWeight map[string]int
+
+
 
 var totalPackets int
 var totalPacketsLost int
@@ -57,6 +61,7 @@ func runAlgorithm() {
 			throughClientWeight[newBuffer[i].packet.Client]+= newBuffer[i].packet.Weight
 			throughClientData[newBuffer[i].packet.Client]++
 		} else {
+			lostClientData[newBuffer[i].packet.Client]++
 			totalPacketsLost++
 		}
 	}
