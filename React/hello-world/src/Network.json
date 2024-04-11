@@ -35,138 +35,6 @@
       "height": 2,
       "size": 32,
       "color": "rgb(244, 117, 96)"
-    },
-    {
-      "id": "Client 1.0",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Client 1.1",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Client 1.2",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 2.0",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 2.1",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 2.2",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 2.3",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 2.4",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 3.0",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 3.1",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 3.2",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 4.0",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 4.1",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 4.2",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 4.3",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.0",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.1",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.2",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.3",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.4",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.5",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
-    },
-    {
-      "id": "Node 5.6",
-      "height": 0,
-      "size": 12,
-      "color": "rgb(232, 193, 160)"
     }
   ],
   "links": [
@@ -176,49 +44,9 @@
       "distance": 80
     },
     {
-      "source": "Client 1",
-      "target": "Client 1.0",
-      "distance": 50
-    },
-    {
-      "source": "Client 1",
-      "target": "Client 1.1",
-      "distance": 50
-    },
-    {
-      "source": "Client 1",
-      "target": "Client 1.2",
-      "distance": 50
-    },
-    {
       "source": "Node 0",
       "target": "Node 2",
       "distance": 80
-    },
-    {
-      "source": "Node 2",
-      "target": "Node 2.0",
-      "distance": 50
-    },
-    {
-      "source": "Node 2",
-      "target": "Node 2.1",
-      "distance": 50
-    },
-    {
-      "source": "Node 2",
-      "target": "Node 2.2",
-      "distance": 50
-    },
-    {
-      "source": "Node 2",
-      "target": "Node 2.3",
-      "distance": 50
-    },
-    {
-      "source": "Node 2",
-      "target": "Node 2.4",
-      "distance": 50
     },
     {
       "source": "Node 0",
@@ -226,84 +54,14 @@
       "distance": 80
     },
     {
-      "source": "Node 3",
-      "target": "Node 3.0",
-      "distance": 50
-    },
-    {
-      "source": "Node 3",
-      "target": "Node 3.1",
-      "distance": 50
-    },
-    {
-      "source": "Node 3",
-      "target": "Node 3.2",
-      "distance": 50
-    },
-    {
       "source": "Node 0",
       "target": "Node 4",
       "distance": 80
     },
     {
-      "source": "Node 4",
-      "target": "Node 4.0",
-      "distance": 50
-    },
-    {
-      "source": "Node 4",
-      "target": "Node 4.1",
-      "distance": 50
-    },
-    {
-      "source": "Node 4",
-      "target": "Node 4.2",
-      "distance": 50
-    },
-    {
-      "source": "Node 4",
-      "target": "Node 4.3",
-      "distance": 50
-    },
-    {
       "source": "Node 0",
       "target": "Node 5",
       "distance": 80
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.0",
-      "distance": 50
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.1",
-      "distance": 50
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.2",
-      "distance": 50
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.3",
-      "distance": 50
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.4",
-      "distance": 50
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.5",
-      "distance": 50
-    },
-    {
-      "source": "Node 5",
-      "target": "Node 5.6",
-      "distance": 50
     }
   ]
 }
