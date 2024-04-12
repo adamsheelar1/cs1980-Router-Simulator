@@ -4,6 +4,8 @@ services:
     build:
       context: ./packet-generator
       dockerfile: Dockerfile
+    ports:
+    - "2000:2000"
 
     depends_on:
       - api

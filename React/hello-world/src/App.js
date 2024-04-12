@@ -7,6 +7,9 @@ import MyResponsiveNetwork from './components/MyResponsiveNetwork';
 import MyResponsiveBar from './components/MyResponsiveBar';
 import FadeIn from './components/FadeIn'; // Import FadeIn component
 import initialData from './Network.json'; // Import JSON data file
+import ClientForm from './components/ClientForm';
+import ClientSidebar from'./components/ClientSidebar';
+
 
 
 function App() {
@@ -14,7 +17,22 @@ function App() {
   const [showPieGraph, setShowPieGraph] = useState(false); // State for controlling graph display
   const [showNetGraph, setShowNetGraph] = useState(false); // State for controlling graph display
   const [showBarGraph, setShowBarGraph] = useState(false); // State for controlling graph display
+  const [showForm, setShowForm] = useState(false);
+  const [clients, setClients] = useState([]);
 
+  const fetchClients = () => {
+    fetch('http://0.0.0.0:2000/getClients')
+      .then(response => response.json())
+      .then(data => setClients(data));
+  };
+  useEffect(() => {
+    fetchClients();
+  }, [clients]);
+
+  const handleAddClient = (newClient) => {
+    // Update the clients state with the new client
+    setClients([...clients, newClient]);
+  };
 
   const [isIn, setIsIn] = useState(false); // State for controlling fade-in animation
 
@@ -51,8 +69,9 @@ function App() {
       fetchData();
       fetchTotalPackets();
       fetchBarData();
+ 
 
-    }, 2); // Update every 2 seconds
+    }, 2000); // Update every 2 seconds
 
     return () => clearInterval(interval);
   }, [data]); // Run whenever data changes
@@ -72,9 +91,12 @@ function App() {
   const barClick = () => {
     setShowBarGraph(!showBarGraph);
   };
-
+  const handleButtonClick = () => {
+    setShowForm(!showForm);
+  };
+ 
   const fetchData = () => {
-    const url = "http://localhost:3000/packets";
+    const url = "http://0.0.0.0:3000/packets";
 
     fetch(url)
       .then(response => {
@@ -111,7 +133,7 @@ function App() {
   };
 
   const fetchTotalPackets = () => {
-    const url = "http://localhost:3000/totalPackets";
+    const url = "http://0.0.0.0:3000/totalPackets";
 
     fetch(url)
       .then(response => {
@@ -140,8 +162,9 @@ function App() {
         setDisplayText('Error fetching data'); // Display error message
       });
   };
+  
   const fetchBarData = () => {
-    const url = "http://localhost:3000/packets";
+    const url = "http://0.0.0.0:3000/packets";
 
     fetch(url)
       .then(response => {
@@ -182,7 +205,11 @@ function App() {
   return (
 
     <div>
-
+      <div>
+      {showForm && <ClientForm onAddClient={handleAddClient} />}
+      <ClientSidebar clients={clients} /> 
+      
+    </div>
       <CenterBox text={displayText}>
         <p>Packet Display</p>
       </CenterBox>
@@ -210,7 +237,7 @@ function App() {
         <Button onClick={() => networkClick()}>Network</Button>
         <Button onClick={() => barClick()}>Stacked Bar</Button>
         <Button onClick={() => handleClick(2)}>C</Button>
-        <Button onClick={() => handleClick(3)}>D</Button>
+        <button onClick={handleButtonClick}>Add Client</button>
       </div>
     </div>
 

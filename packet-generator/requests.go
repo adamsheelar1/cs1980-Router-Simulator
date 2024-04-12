@@ -15,17 +15,17 @@ import (
 // router.POST("/runSimulation", runSimulation)
 
 func getClients(c *gin.Context) {
-	var clientNames []string
+	var clientData []clientData
 	for i := 0; i < len(clients); i++ {
-		clientNames = append(clientNames, clients[i].Client)
+		clientData = append(clientData, clients[i])
 	}
-	c.IndentedJSON(http.StatusOK, clientNames)
+	c.IndentedJSON(http.StatusOK, clientData)
 }
 
 func getClientsByName(c *gin.Context) {
 	clientName := c.Param("Client")
 
-	for _, a:= range clients {
+	for _, a := range clients {
 		if a.Client == clientName {
 			c.IndentedJSON(http.StatusOK, clientName)
 			return
@@ -55,7 +55,7 @@ func updateClientData(c *gin.Context) {
 		return
 	} else {
 		for i := 0; i < len(clients); i++ {
-			if (clients[i].Client == updateData.Client) {
+			if clients[i].Client == updateData.Client {
 				m.Lock()
 				clients[i].WeightCap = updateData.WeightCap
 				clients[i].FrequencyCap = updateData.FrequencyCap
@@ -63,7 +63,7 @@ func updateClientData(c *gin.Context) {
 				m.Unlock()
 				return
 			}
-		}	
+		}
 		fmt.Println("client not found during updateClientData call")
 	}
 }
@@ -76,9 +76,9 @@ func deleteClient(c *gin.Context) {
 		return
 	} else {
 		for i := 0; i < len(clients); i++ {
-			if (clients[i].Client == clientToDelete) {
+			if clients[i].Client == clientToDelete {
 				m.Lock()
-				clients = append(clients[:i],clients[i+1:]...)
+				clients = append(clients[:i], clients[i+1:]...)
 				m.Unlock()
 				fmt.Println("successfully removed client from clients")
 				return
@@ -89,18 +89,16 @@ func deleteClient(c *gin.Context) {
 
 }
 
-
 func runSimulation(c *gin.Context) {
-		var runData runData
-		if err := c.BindJSON(&runData); err != nil {
-			log.Println(err)
-			return
-		} else {
-			ctx, cancel := context.WithCancel(context.Background())
-			sigc := make(chan os.Signal, 1)
-			spawnClients(ctx, runData.SimulationRate)
-			<-sigc
-			cancel()
-		}
+	var runData runData
+	if err := c.BindJSON(&runData); err != nil {
+		log.Println(err)
+		return
+	} else {
+		ctx, cancel := context.WithCancel(context.Background())
+		sigc := make(chan os.Signal, 1)
+		spawnClients(ctx, runData.SimulationRate)
+		<-sigc
+		cancel()
+	}
 }
-
