@@ -34,7 +34,7 @@ const ClientForm = () => {
       }
 
       // Handle success
-      onAddClient(payload)
+      
       console.log('Client added successfully');
       setClientName('');
       setWeightCap('');
