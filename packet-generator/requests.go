@@ -31,7 +31,7 @@ func getClientsByName(c *gin.Context) {
 			return
 		}
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "albumnot found"})
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
 func addClient(c *gin.Context) {

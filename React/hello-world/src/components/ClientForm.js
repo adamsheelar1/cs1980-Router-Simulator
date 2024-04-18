@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ClientSidebar from './ClientSidebar';
 
 
-const ClientForm = () => {
+const ClientForm = ({ onClientAdd }) => { 
   const[clientName, setClientName]= useState('');
   const [weightCap, setWeightCap] = useState('');
   const [frequencyCap, setFrequencyCap] = useState('');
@@ -40,6 +40,8 @@ const ClientForm = () => {
       setWeightCap('');
       setFrequencyCap('');
       setPriotirtySeed('');
+      onClientAdd();
+
     } catch (error) {
       console.error('Error adding client:', error);
     }

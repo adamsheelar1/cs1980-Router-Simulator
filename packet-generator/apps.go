@@ -15,24 +15,23 @@ import (
 
 // packetData type
 type packetData struct {
-	Client string `json:"application"`
-	Weight int	`json:"weight"`
-	Priority int `json:"priority"`
+	Client   string `json:"application"`
+	Weight   int    `json:"weight"`
+	Priority int    `json:"priority"`
 }
 
 type clientData struct {
-	Client string `json:"client"`
-	WeightCap int `json:"weightcap"`
-	FrequencyCap int `json:"frequencycap"`
-	PrioritySeed int `json:"priorityseed"`
+	Client       string `json:"client"`
+	WeightCap    int    `json:"weightcap"`
+	FrequencyCap int    `json:"frequencycap"`
+	PrioritySeed int    `json:"priorityseed"`
 }
 
 type runData struct {
 	SimulationRate int `json:"simulationrate"`
 }
 
-var clients = []clientData {
-}
+var clients = []clientData{}
 
 var m sync.Mutex
 
@@ -44,16 +43,16 @@ func spawnClients(ctx context.Context, sr int) {
 		packet.Client = clients[i].Client
 		packet.Weight = rand.Intn(clients[i].WeightCap)
 		packet.Priority = rand.Intn(clients[i].PrioritySeed) * 100
-		go func()  {
+		go func() {
 			for {
 				select {
-				case <- ctx.Done():
+				case <-ctx.Done():
 					return
-				case <- ticker.C:
+				case <-ticker.C:
 					sendPacket(packet)
 					//fmt.Println("")
-					time.Sleep(time.Duration(rand.Intn(clients[i].FrequencyCap)) * time.Second)
-					ticker.Reset(time.Duration(rand.Intn(clients[i].FrequencyCap)*2) * time.Second)
+					time.Sleep(time.Duration(rand.Intn(clients[i].FrequencyCap)+1) * time.Second)
+					ticker.Reset(time.Duration(rand.Intn(clients[i].FrequencyCap)*2+1) * time.Second)
 				}
 			}
 		}()
@@ -89,9 +88,3 @@ func sendPacket(packet packetData) {
 	fmt.Println(string(body))
 	res.Body.Close()
 }
-
-
-
-
-
-

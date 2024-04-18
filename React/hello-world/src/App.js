@@ -7,9 +7,7 @@ import MyResponsiveNetwork from './components/MyResponsiveNetwork';
 import MyResponsiveBar from './components/MyResponsiveBar';
 import FadeIn from './components/FadeIn'; // Import FadeIn component
 import initialData from './Network.json'; // Import JSON data file
-import ClientForm from './components/ClientForm';
-import ClientSidebar from'./components/ClientSidebar';
-
+import ClientParent from './components/ClientParent';
 
 
 function App() {
@@ -17,30 +15,27 @@ function App() {
   const [showPieGraph, setShowPieGraph] = useState(false); // State for controlling graph display
   const [showNetGraph, setShowNetGraph] = useState(false); // State for controlling graph display
   const [showBarGraph, setShowBarGraph] = useState(false); // State for controlling graph display
-  const [showForm, setShowForm] = useState(false);
-  const [clients, setClients] = useState([]);
-
-  const fetchClients = () => {
-    fetch('http://0.0.0.0:2000/getClients')
-      .then(response => response.json())
-      .then(data => setClients(data));
-  };
-  useEffect(() => {
-    fetchClients();
-  }, [clients]);
-
-  const handleAddClient = (newClient) => {
-    // Update the clients state with the new client
-    setClients([...clients, newClient]);
-  };
-
+  const [showClient, setShowClient] = useState(false);
   const [isIn, setIsIn] = useState(false); // State for controlling fade-in animation
 
-  const [data, setData] = useState([
-    { id: 'Saftey', value: 0 },
-    { id: 'Security', value: 0 },
-    { id: 'Server', value: 0 },
-  ]);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchClientData = async() =>{
+      try{
+        const response = await fetch('http://0.0.0.0:2000/getCliencts');
+        const jsonData = await response.json();
+        const newData = jsonData.map(item=> ({id: item.Client, value:0}));
+        setData(newData);
+
+      } catch(error){
+        console.error('Error Fettching Data:', error);
+      }
+    };
+    fetchClientData();
+
+  }, []);
+
   const [netData, setNetData] = useState(initialData);
   const [barData, setBarData] = useState([
     {
@@ -76,11 +71,11 @@ function App() {
     return () => clearInterval(interval);
   }, [data]); // Run whenever data changes
 
-  const handleClick = (index) => {
+  /*const handleClick = (index) => {
     // setShowPieGraph(true);
     // setRandomIndex(index);
   };
-
+*/
   const PieChartClick = () => {
     setShowPieGraph(!showPieGraph);
     setIsIn(true); // Set isIn to true when PieChart button is clicked
@@ -92,44 +87,62 @@ function App() {
     setShowBarGraph(!showBarGraph);
   };
   const handleButtonClick = () => {
-    setShowForm(!showForm);
+    setShowClient(!showClient);
   };
- 
-  const fetchData = () => {
-    const url = "http://0.0.0.0:3000/packets";
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Response is not in JSON format');
-        }
-
-        return response.json();
-      })
-      .then(packet => {
-        // Update the state to show the graph when data is fetched
-        setIsIn(true); // Set isIn to true when data is fetched
-
-        // Display the packet in a box or log it
-        console.log('Packet:', packet); // Example: Log the packet
-        // Update displayText state with packet content
-
-        // Update the data state based on the packet
-        setData([
-          { id: 'Safety', value: packet.safety },
-          { id: 'Security', value: packet.security },
-          { id: 'Server', value: packet.server },
-        ]);
-      })
-      .catch(error => {
-        console.error('Error: ', error.message);
-        setDisplayText('Error fetching data'); // Display error message
+ const handleStartStop= async(e) =>{
+    const payload = {
+      SimulationRate: 5
+    }
+    
+    try {                                               
+      const response = await fetch('http://0.0.0.0:2000/runSimulation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
+      if (!response.ok) {
+        throw new Error('Failed to add start Simulation');
+      }
+    } catch (error) {
+      console.error('Error starting Simulation:', error);
+    }
+  };
+
+  const fetchData = () => {
+    setIsIn(true);
+    data.forEach(item=> {
+      const url = `http://0.0.0.0:3000/packets/${item.id}`;
+      fetch(url)
+        .then(response =>{
+          if(!response.ok){
+            throw new Error('Network reposne not okay.');
+          }
+          const contentType = response.headers.get('content-type');
+          if(!contentType || !contentType.includes('application/json')){
+            throw new Error("Response not in JSON format.");
+          }
+          return response.json();
+        })
+        .then(packet => {
+          setData(prevData=>{
+            const updateData = prevData.map(dataItem => {
+              if(dataItem.id === item.id){
+                return{...dataItem, value:packet.value};
+              }
+              return dataItem;
+            });
+            return updateData;
+          });
+        })
+        .catch(error =>{
+          console.error('Error:', error.message);
+          setDisplayText('Error fetching Data.');
+        });
+    });
+
   };
 
   const fetchTotalPackets = () => {
@@ -206,10 +219,8 @@ function App() {
 
     <div>
       <div>
-      {showForm && <ClientForm onAddClient={handleAddClient} />}
-      <ClientSidebar clients={clients} /> 
-      
-    </div>
+        {showClient && <ClientParent />}
+      </div>
       <CenterBox text={displayText}>
         <p>Packet Display</p>
       </CenterBox>
@@ -236,8 +247,8 @@ function App() {
         <Button onClick={() => PieChartClick()}>PieChart</Button>
         <Button onClick={() => networkClick()}>Network</Button>
         <Button onClick={() => barClick()}>Stacked Bar</Button>
-        <Button onClick={() => handleClick(2)}>C</Button>
-        <button onClick={handleButtonClick}>Add Client</button>
+        <Button onClick={() => handleStartStop()}>Start/Stop Simulation</Button>
+        <Button onClick={() => handleButtonClick()}>Add Client</Button>
       </div>
     </div>
 
