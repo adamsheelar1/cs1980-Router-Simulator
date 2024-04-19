@@ -3,7 +3,7 @@ import ClientSidebar from './ClientSidebar';
 
 
 const ClientForm = ({ onClientAdd }) => { 
-  const[clientName, setClientName]= useState('');
+  const [clientName, setClientName]= useState('');
   const [weightCap, setWeightCap] = useState('');
   const [frequencyCap, setFrequencyCap] = useState('');
   const [prioritySeed, setPriotirtySeed] = useState('');
@@ -41,6 +41,7 @@ const ClientForm = ({ onClientAdd }) => {
       setFrequencyCap('');
       setPriotirtySeed('');
       onClientAdd();
+      onClientAdd(payload)
 
     } catch (error) {
       console.error('Error adding client:', error);

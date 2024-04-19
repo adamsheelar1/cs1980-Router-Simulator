@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import ClientForm from './ClientForm';
 import ClientSidebar from './ClientSidebar';
 
-const ClientParent = () => {
+const ClientParent = ({onDataUpdate}) => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [clients, setClient] = useState([]);
+
 
   const handleClientAdd = () => {
     setShowSidebar(true);
+    const newClient = {...clients, value:0};
+    setClient([...clients, newClient])
+    onDataUpdate([...clients,newClient ])
 
   };
 

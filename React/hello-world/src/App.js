@@ -17,24 +17,16 @@ function App() {
   const [showBarGraph, setShowBarGraph] = useState(false); // State for controlling graph display
   const [showClient, setShowClient] = useState(false);
   const [isIn, setIsIn] = useState(false); // State for controlling fade-in animation
-
   const [data, setData] = useState([]);
+  
 
-  useEffect(() => {
-    const fetchClientData = async() =>{
-      try{
-        const response = await fetch('http://0.0.0.0:2000/getCliencts');
-        const jsonData = await response.json();
-        const newData = jsonData.map(item=> ({id: item.Client, value:0}));
-        setData(newData);
 
-      } catch(error){
-        console.error('Error Fettching Data:', error);
-      }
-    };
-    fetchClientData();
 
-  }, []);
+  const handleDataUpdate = (clients) => {
+
+    const formData = clients.map((client)=> ({ id: client.client, value: 0 }));
+    setData(formData);
+  };
 
   const [netData, setNetData] = useState(initialData);
   const [barData, setBarData] = useState([
@@ -113,36 +105,32 @@ function App() {
 
   const fetchData = () => {
     setIsIn(true);
-    data.forEach(item=> {
-      const url = `http://0.0.0.0:3000/packets/${item.id}`;
-      fetch(url)
-        .then(response =>{
-          if(!response.ok){
-            throw new Error('Network reposne not okay.');
-          }
-          const contentType = response.headers.get('content-type');
-          if(!contentType || !contentType.includes('application/json')){
-            throw new Error("Response not in JSON format.");
-          }
-          return response.json();
-        })
-        .then(packet => {
-          setData(prevData=>{
-            const updateData = prevData.map(dataItem => {
-              if(dataItem.id === item.id){
-                return{...dataItem, value:packet.value};
-              }
-              return dataItem;
-            });
-            return updateData;
+    Promise.all(
+      data.map((item) => {
+        const url = `http://0.0.0.0:3000/packets/${item.client}`;
+        return fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Network response not okay.');
+            }
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+              throw new Error('Response not in JSON format.');
+            }
+            return response.json();
+          })
+          .then((packet) => {
+            return { ...item, value: packet.value }; // Update the value for the corresponding client
           });
-        })
-        .catch(error =>{
-          console.error('Error:', error.message);
-          setDisplayText('Error fetching Data.');
-        });
+      })
+    )
+    .then((updateData)=>{
+      setData(updateData);
+    })
+    .catch((error)=>{
+      console.error('Error:', error.message);
+      setDisplayText('Error fetching data.');
     });
-
   };
 
   const fetchTotalPackets = () => {
@@ -219,7 +207,7 @@ function App() {
 
     <div>
       <div>
-        {showClient && <ClientParent />}
+        {showClient && <ClientParent onDataUpdate={handleDataUpdate} />}
       </div>
       <CenterBox text={displayText}>
         <p>Packet Display</p>
