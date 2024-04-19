@@ -7,9 +7,8 @@ const ClientParent = ({onDataUpdate}) => {
   const [clients, setClient] = useState([]);
 
 
-  const handleClientAdd = () => {
+  const handleClientAdd = (newClient) => {
     setShowSidebar(true);
-    const newClient = {...clients, value:0};
     setClient([...clients, newClient])
     onDataUpdate([...clients,newClient ])
 

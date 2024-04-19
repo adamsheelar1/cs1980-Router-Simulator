@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import ClientSidebar from './ClientSidebar';
-
-
 const ClientForm = ({ onClientAdd }) => { 
   const [clientName, setClientName]= useState('');
   const [weightCap, setWeightCap] = useState('');
@@ -32,17 +29,13 @@ const ClientForm = ({ onClientAdd }) => {
       if (!response.ok) {
         throw new Error('Failed to add client');
       }
-
       // Handle success
-      
+      onClientAdd(payload);
       console.log('Client added successfully');
       setClientName('');
       setWeightCap('');
       setFrequencyCap('');
-      setPriotirtySeed('');
-      onClientAdd();
-      onClientAdd(payload)
-
+      setPriotirtySeed('')
     } catch (error) {
       console.error('Error adding client:', error);
     }
@@ -54,7 +47,7 @@ const ClientForm = ({ onClientAdd }) => {
         Weight Cap:
         <input
           type="text"
-          deafaultValue={"Weight Cap"}
+          defaultValue={"Weight Cap"}
           onChange={(e) => setWeightCap(e.target.value)}
         />
       </label>

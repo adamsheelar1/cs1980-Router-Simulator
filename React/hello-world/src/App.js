@@ -11,6 +11,7 @@ import ClientParent from './components/ClientParent';
 
 
 function App() {
+
   const [displayText, setDisplayText] = useState('');
   const [showPieGraph, setShowPieGraph] = useState(false); // State for controlling graph display
   const [showNetGraph, setShowNetGraph] = useState(false); // State for controlling graph display
@@ -23,8 +24,12 @@ function App() {
 
 
   const handleDataUpdate = (clients) => {
+   
+    const formData = clients.map(client => ({
+      id: client.Client,
+      value: 0
+    }));
 
-    const formData = clients.map((client)=> ({ id: client.client, value: 0 }));
     setData(formData);
   };
 
@@ -47,27 +52,47 @@ function App() {
     },
   ]);
 
-  
 
   const [centerText, setCenterText] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
+      
+      fetchClientData();
       fetchData();
       fetchTotalPackets();
       fetchBarData();
- 
+      console.log("Data state:", data);
 
     }, 2000); // Update every 2 seconds
 
     return () => clearInterval(interval);
-  }, [data]); // Run whenever data changes
+  }, []); // Run whenever data changes
 
   /*const handleClick = (index) => {
     // setShowPieGraph(true);
     // setRandomIndex(index);
   };
 */
+const fetchClientData = async () => {
+  try {
+    const response = await fetch('http://0.0.0.0:2000/getClients');
+    if (!response.ok) {
+      throw new Error('Failed to fetch clients');
+    }
+    const clients = await response.json();
+    console.log(JSON.stringify(clients))
+    // Initialize data state array with clients and value 0
+    const initialData = clients.map(client => ({ id: client.client, value: 0 }));
+    console.log(JSON.stringify(initialData));
+    setData(prevData => [...prevData,...initialData]);
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching clients:', error);
+  }
+};
+
+
   const PieChartClick = () => {
     setShowPieGraph(!showPieGraph);
     setIsIn(true); // Set isIn to true when PieChart button is clicked
@@ -120,6 +145,7 @@ function App() {
             return response.json();
           })
           .then((packet) => {
+            console.log(JSON.stringify(packet))
             return { ...item, value: packet.value }; // Update the value for the corresponding client
           });
       })
