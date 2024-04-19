@@ -24,13 +24,15 @@ function App() {
 
 
   const handleDataUpdate = (clients) => {
-   
+   /*
     const formData = clients.map(client => ({
       id: client.Client,
       value: 0
     }));
 
     setData(formData);
+    */
+   
   };
 
   const [netData, setNetData] = useState(initialData);
@@ -57,8 +59,6 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      
-      fetchClientData();
       fetchData();
       fetchTotalPackets();
       fetchBarData();
@@ -105,6 +105,7 @@ const fetchClientData = async () => {
   };
   const handleButtonClick = () => {
     setShowClient(!showClient);
+    fetchClientData();
   };
 
  const handleStartStop= async(e) =>{
@@ -129,6 +130,7 @@ const fetchClientData = async () => {
   };
 
   const fetchData = () => {
+    console.log(data);
     setIsIn(true);
     Promise.all(
       data.map((item) => {
