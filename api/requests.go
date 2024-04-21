@@ -83,7 +83,15 @@ func getPacketsLostByClient(c *gin.Context) {
 }
 
 func getTotalPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalPackets)
+	var packetSent []gin.H
+	for client, packets := range totalClientData{
+		packetSent = append(packetSent, gin.H{
+			"client": client,
+			"packets": packets,
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, packetSent)
 }
 
 func getTotalPacketsLost(c *gin.Context) {
@@ -124,8 +132,20 @@ func postPacket(c *gin.Context) {
 		buffer = append(buffer, newPacket)
 		m.Unlock()
 
-		totalClientData[newPacket.packet.Client]++
-		totalClientWeight[newPacket.packet.Client]+= newPacket.packet.Weight
+		client:= packetIn.Client
+		if _, ok := totalClientData[client]; ok {
+			totalClientData[client]++
+		} else {
+			totalClientData[client] = 1
+		}
+		if _, ok := totalClientWeight[client]; ok {
+            totalClientWeight[client] += newPacket.packet.Weight
+        } else {
+            totalClientWeight[client] = newPacket.packet.Weight
+        }
+
+		
+		fmt.Println("TotalClientData:", totalClientData)
 		//fmt.Println(totalPackets)
 	}
 }

@@ -15,7 +15,7 @@ import (
 
 // packetData type
 type packetData struct {
-	Client   string `json:"application"`
+	Client   string `json:"client"`
 	Weight   int    `json:"weight"`
 	Priority int    `json:"priority"`
 }
@@ -61,7 +61,7 @@ func spawnClients(ctx context.Context, sr int) {
 
 func sendPacket(packet packetData) {
 	// hard coded url of the api
-	url := "http://api:3000/packets"
+	url := "http://0.0.0.0:3000/packets"
 	payload, err := json.Marshal(packet)
 	fmt.Fprintf(os.Stdout, "%s", payload)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
