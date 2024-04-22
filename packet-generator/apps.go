@@ -15,7 +15,7 @@ import (
 
 // packetData type
 type packetData struct {
-	Client   string `json:"application"`
+	Client   string `json:"client"`
 	Weight   int    `json:"weight"`
 	Priority int    `json:"priority"`
 }

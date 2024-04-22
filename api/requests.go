@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
+func getAlgoCount(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, algoCount)
+}
+
 func getPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalClientData)
+	c.IndentedJSON(http.StatusOK, totalPackets)
 }
 
 func getPacketsByClient(c *gin.Context) {
@@ -23,7 +28,14 @@ func getPacketsByClient(c *gin.Context) {
 }
 
 func getThroughPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughClientData)
+	var thoughSend []gin.H
+	for client, packets := range throughClientData {
+		thoughSend = append(thoughSend, gin.H{
+			"client":  client,
+			"packets": packets,
+		})
+	}
+	c.IndentedJSON(http.StatusOK, thoughSend)
 }
 
 func getThroughPacketsByClient(c *gin.Context) {
@@ -83,7 +95,15 @@ func getPacketsLostByClient(c *gin.Context) {
 }
 
 func getTotalPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalPackets)
+	var packetSent []gin.H
+	for client, packets := range totalClientData {
+		packetSent = append(packetSent, gin.H{
+			"client":  client,
+			"packets": packets,
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, packetSent)
 }
 
 func getTotalPacketsLost(c *gin.Context) {
@@ -123,9 +143,20 @@ func postPacket(c *gin.Context) {
 		m.Lock()
 		buffer = append(buffer, newPacket)
 		m.Unlock()
+		client := packetIn.Client
+		if _, ok := totalClientData[client]; ok {
+			totalClientData[client]++
+		} else {
+			totalClientData[client] = 1
+		}
+		if _, ok := totalClientWeight[client]; ok {
+			totalClientWeight[client] += newPacket.packet.Weight
+		} else {
+			totalClientWeight[client] = newPacket.packet.Weight
+		}
 
 		totalClientData[newPacket.packet.Client]++
-		totalClientWeight[newPacket.packet.Client]+= newPacket.packet.Weight
+		totalClientWeight[newPacket.packet.Client] += newPacket.packet.Weight
 		//fmt.Println(totalPackets)
 	}
 }

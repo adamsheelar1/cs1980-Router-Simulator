@@ -60,7 +60,6 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchData();
-      fetchTotalPackets();
       fetchBarData();
       console.log("Data state:", data);
 
@@ -129,106 +128,82 @@ const fetchClientData = async () => {
     }
   };
 
-  const fetchData = () => {
-    console.log(data);
-    setIsIn(true);
-    Promise.all(
-      data.map((item) => {
-        const url = `http://0.0.0.0:3000/packets/${item.client}`;
-        return fetch(url)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error('Network response not okay.');
-            }
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-              throw new Error('Response not in JSON format.');
-            }
-            return response.json();
-          })
-          .then((packet) => {
-            console.log(JSON.stringify(packet))
-            return { ...item, value: packet.value }; // Update the value for the corresponding client
-          });
-      })
-    )
-    .then((updateData)=>{
-      setData(updateData);
-    })
-    .catch((error)=>{
-      console.error('Error:', error.message);
-      setDisplayText('Error fetching data.');
-    });
-  };
-
-  const fetchTotalPackets = () => {
+  const fetchData = async() => {
+  try{
     const url = "http://0.0.0.0:3000/totalPackets";
+    
+    const resposne = await fetch(url);
+    if(!resposne.ok){
+      console.error("Failed to fetch data");
+    }
+    const result = await resposne.json();
+    const newData = result.map(item=>({id:item.client, value:item.packets}));
+    const totalPackets = result.reduce((sum, item) => sum + item.packets, 0);
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+    setData(newData);
+    setCenterText(totalPackets)
+  } catch(error){
+    console.error("failed:", error.message);
+    
+  }
+  };  
 
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Response is not in JSON format');
-        }
 
-        return response.json();
-      })
-      .then(packet => {
-        // Update the state to show the graph when data is fetched
-        setIsIn(true); // Set isIn to true when data is fetched
 
-        // Display the packet in a box or log it
-        console.log('Packet:', packet); // Example: Log the packet
-        // Update displayText state with packet content
-        setCenterText(JSON.stringify(packet, null, 2));
-      })
-      .catch(error => {
-        console.error('Error: ', error.message);
-        setDisplayText('Error fetching data'); // Display error message
-      });
-  };
-  
+
   const fetchBarData = () => {
-    const url = "http://0.0.0.0:3000/packets";
+    const throughPacketsUrl = "http://0.0.0.0:3000/throughPackets";
+    const totalPacketsUrl  = "http://0.0.0.0:3000/totalPackets"
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+    fetch(throughPacketsUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Response is not in JSON format');
+      }
+      return response.json();
+    })
+    .then(throughPacketData => {
+      // Calculate total accepted packets for each client
+      const totalAcceptedByClient = throughPacketData.reduce((acc, curr) => {
+        acc[curr.client] = curr.packets;
+        return acc;
+      }, {});
 
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Response is not in JSON format');
-        }
+      // Fetch totalPackets data
+      return fetch(totalPacketsUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Response is not in JSON format');
+          }
+          return response.json();
+        })
+        .then(totalPacketData => {
+          // Calculate total packets
+          const totalPackets = totalPacketData.reduce((acc, curr) => {
+            return acc + curr.packets;
+          }, 0);
 
-        return response.json();
-      })
-      .then(packet => {
-        // Update the state to show the graph when data is fetched
-        setIsIn(true); // Set isIn to true when data is fetched
-
-        // Display the packet in a box or log it
-        console.log('Packet:', packet); // Example: Log the packet
-        // Update displayText state with packet content
-        setDisplayText(JSON.stringify(packet, null, 2)); // Example: Display JSON stringified packet with indentation
-
-        // Update the data state based on the packet
-        setBarData([
-          { country: 'Safety', Accepted: packet.safety, Lost: 5 },
-          { country: 'Security', Accepted: packet.security, Lost: 5 },
-          { country: 'Server', Accepted: packet.server, Lost: 5},
-        ]);
-      })
-      .catch(error => {
-        console.error('Error: ', error.message);
-        setDisplayText('Error fetching data'); // Display error message
-      });
-  };
+          // Update barData state
+          const barData = Object.entries(totalAcceptedByClient).map(([client, accepted]) => ({
+            country: client,
+            Accepted: totalPackets - accepted,
+            Lost: accepted  // Calculate lost packets
+          }));
+          setBarData(barData);
+        });
+    })
+    .catch(error => {
+      console.error('Error: ', error.message);
+    });
+};
 
 
   return (

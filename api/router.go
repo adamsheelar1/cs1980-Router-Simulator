@@ -6,9 +6,9 @@ import (
 )
 
 type Packet struct {
-	Client string `json:"client"`
-	Weight      int    `json:"weight"`
-	Priority int 	   `json:"priority"`
+	Client   string `json:"client"`
+	Weight   int    `json:"weight"`
+	Priority int    `json:"priority"`
 }
 
 type ExpandedPacket struct {
@@ -56,10 +56,10 @@ func runAlgorithm() {
 
 	cap := networkCapacity
 
-	for i := 1; i < len(newBuffer); i++ {
+	for i := 0; i < len(newBuffer); i++ {
 		if cap > newBuffer[i].packet.Weight {
-			cap-= newBuffer[i].packet.Weight
-			throughClientWeight[newBuffer[i].packet.Client]+= newBuffer[i].packet.Weight
+			cap -= newBuffer[i].packet.Weight
+			throughClientWeight[newBuffer[i].packet.Client] += newBuffer[i].packet.Weight
 			throughClientData[newBuffer[i].packet.Client]++
 		} else {
 			lostClientData[newBuffer[i].packet.Client]++

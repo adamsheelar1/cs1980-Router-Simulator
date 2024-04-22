@@ -2,6 +2,7 @@ package main
 
 import (
 	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -54,10 +55,10 @@ func main() {
 
 	//router.GET("/throughput", getThroughput)
 	router.GET("/throughput/:Client", getThroughputByClient)
+	router.GET("/algoCount", getAlgoCount)
 
 	router.POST("/packets", postPacket)
 	router.POST("/changeNetworkCapacity", postNetworkCapacity)
-	
 
 	ticker := time.NewTicker(5 * time.Second)
 	done := make(chan bool)
