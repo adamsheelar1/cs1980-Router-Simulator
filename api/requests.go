@@ -8,42 +8,121 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func getAlgoCount(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, algoCount)
+}
+
 func getPackets(c *gin.Context) {
-	fmt.Println(totalApplications)
-	c.IndentedJSON(http.StatusOK, totalApplications)
+	c.IndentedJSON(http.StatusOK, totalPackets)
+}
+
+func getPacketsByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := totalClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
+func getThroughPackets(c *gin.Context) {
+	var thoughSend []gin.H
+	for client, packets := range throughClientData {
+		thoughSend = append(thoughSend, gin.H{
+			"client":  client,
+			"packets": packets,
+		})
+	}
+	c.IndentedJSON(http.StatusOK, thoughSend)
+}
+
+func getThroughPacketsByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := throughClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
+func getWeight(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, totalClientWeight)
+}
+
+func getWeightByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := totalClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
+func getThroughWeight(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, throughClientWeight)
+}
+
+func getThroughWeightByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := throughClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
+}
+
+func getPacketsLost(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, lostClientData)
+}
+
+func getPacketsLostByClient(c *gin.Context) {
+	client := c.Param("client")
+
+	val, ok := lostClientData[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
 func getTotalPackets(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalPackets)
+	var packetSent []gin.H
+	for client, packets := range totalClientData {
+		packetSent = append(packetSent, gin.H{
+			"client":  client,
+			"packets": packets,
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, packetSent)
 }
 
 func getTotalPacketsLost(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, totalPacketsLost)
 }
 
-func getServerThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["server"])
-}	
+// func getThroughput(c *gin.Context) {
+// 	c.IndentedJSON(http.StatusOK, )
+// }
 
-func getServerTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["server"])
-}	
+func getThroughputByClient(c *gin.Context) {
+	client := c.Param("client")
 
-
-func getSafetyThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["safety"])
-}
-
-func getSafetyTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["safety"])
-}
-
-func getSecurityThrough(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, throughApplications["security"])
-}
-
-func getSecurityTotal(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, totalApplications["security"])
+	val, ok := throughClientWeight[client]
+	if ok {
+		c.IndentedJSON(http.StatusOK, val/algoCount)
+		return
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "client not found"})
 }
 
 func postPacket(c *gin.Context) {
@@ -56,16 +135,29 @@ func postPacket(c *gin.Context) {
 	} else {
 		totalPackets++
 		newPacket.packet = packetIn
-		newPacket.Priority = priority[newPacket.packet.Application]
-		fmt.Println()
+
 		// naive approach to creating the profit we would get from using this item in the knapsack
-		newPacket.Profit = newPacket.Priority / newPacket.packet.Weight
+		newPacket.Profit = newPacket.packet.Priority / newPacket.packet.Weight
 
 		// store this bigger packet
+		m.Lock()
 		buffer = append(buffer, newPacket)
+		m.Unlock()
+		client := packetIn.Client
+		if _, ok := totalClientData[client]; ok {
+			totalClientData[client]++
+		} else {
+			totalClientData[client] = 1
+		}
+		if _, ok := totalClientWeight[client]; ok {
+			totalClientWeight[client] += newPacket.packet.Weight
+		} else {
+			totalClientWeight[client] = newPacket.packet.Weight
+		}
 
-		totalApplications[newPacket.packet.Application]++
-		fmt.Println(totalPackets)
+		totalClientData[newPacket.packet.Client]++
+		totalClientWeight[newPacket.packet.Client] += newPacket.packet.Weight
+		//fmt.Println(totalPackets)
 	}
 }
 

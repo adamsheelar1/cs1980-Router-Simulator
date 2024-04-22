@@ -1,61 +1,68 @@
 package main
 
-import "sort"
-
-//"fmt"
+import (
+	"sort"
+	"sync"
+)
 
 type Packet struct {
-	Application string `json:"application"`
-	Weight      int    `json:"weight"`
+	Client   string `json:"client"`
+	Weight   int    `json:"weight"`
+	Priority int    `json:"priority"`
 }
 
 type ExpandedPacket struct {
 	packet Packet
-	Priority int
 	Profit int
 }
 
 var buffer = []ExpandedPacket{}
 
-var totalApplications map[string]int
+// the number of application packets
+var totalClientData map[string]int
 
 // the number of application packets that make it through
 // missing packets per app = total - through
-var throughApplications map[string]int
+var throughClientData map[string]int
 
+var lostClientData map[string]int
+
+var totalClientWeight map[string]int
+var throughClientWeight map[string]int
 
 var totalPackets int
 var totalPacketsLost int
 
-// configurable network capacity via a POST request
 // for changing the algorithm while its running
 var networkCapacity int
 
-var priority = map[string]int{
-	"server" : 1000,
-	"safety" : 1500,
-	"security" : 1300,
-}
+var algoCount int
+
+var m sync.Mutex
 
 func runAlgorithm() {
 	// copy old buffer and clear it so it can keep filling while we run the algorithm
-	networkCapacity = 1000
+	algoCount++
 	var newBuffer = []ExpandedPacket{}
-	copy(newBuffer, buffer)
+	m.Lock()
+	newBuffer = append(newBuffer, buffer...)
 	buffer = nil
+	m.Unlock()
 
 	// sort newBuffer
 	sort.Slice(newBuffer, func(i, j int) bool {
-		return newBuffer[i].Priority > newBuffer[j].Priority
+		return newBuffer[i].packet.Priority > newBuffer[j].packet.Priority
 	})
-	
+
 	cap := networkCapacity
 
-	for i := 1; i < len(newBuffer); i++ {
+	for i := 0; i < len(newBuffer); i++ {
 		if cap > newBuffer[i].packet.Weight {
 			cap -= newBuffer[i].packet.Weight
-			throughApplications[newBuffer[i].packet.Application]++
+			throughClientWeight[newBuffer[i].packet.Client] += newBuffer[i].packet.Weight
+			throughClientData[newBuffer[i].packet.Client]++
 		} else {
+			lostClientData[newBuffer[i].packet.Client]++
 			totalPacketsLost++
 		}
 	}
